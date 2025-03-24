@@ -1,0 +1,17 @@
+{
+  "name": "project-todolist",
+  "version": "1.0.0",
+  "description": "Create a simple to-do list site",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "html-webpack-plugin": "^5.6.3",
+    "webpack": "^5.98.0",
+    "webpack-cli": "^6.0.1"
+  }
+}
