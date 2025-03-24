@@ -29,6 +29,6 @@ export default class Project {
   }
   
   deleteTask(tName){
-    this.setTasks(this.tasks.filter((task) => task.name === tName))
+    this.setTasks(this.tasks.filter((task) => task.name !== tName))
   }
 }
