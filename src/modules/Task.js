@@ -1,4 +1,3 @@
-
 export default class Task{
   constructor(
     name, 
@@ -13,4 +12,25 @@ export default class Task{
     this.urgency = urgency,
     this.project = project
   }
+  
+  setName(taskName){
+    this.name = taskName
+  }
+  setDetails(taskDetails){
+    this.name = taskDetails
+  }
+  setDuedate(taskDuedate){
+    this.name = taskDuedate
+  }
+  setUrgency(taskUrgency){
+    this.name = taskUrgency
+  }
+  setProject(taskProject){
+    this.name = taskProject
+  }
+  
+  getName(){
+    return this.name
+  }
 }
+
