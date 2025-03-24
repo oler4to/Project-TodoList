@@ -10,7 +10,43 @@
     
     <section id="task-form">
       <form>
+        <h2 id="form-header">Create Task</h2>
         
+        <div>
+          <label>Name</label>
+          <input type="text" name="task-name"/>
+        </div>
+        
+        <div>
+          <label>Details</label>
+          <input type="text" name="task-details"/>
+        </div>
+        
+        <div>
+          <label>Duedate</label>
+          <input type="date" name="task-duedate"/>
+        </div>
+        
+        <div>
+          <label>Urgency</label>
+          <select name="task-urgency">
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+        </div>
+        
+        <div>
+          <label>Project</label>
+          <select name="task-project">
+            
+            <option>Personal</option>
+            <option>Work</option>
+          
+          </select>
+        </div>
+        
+      <button type="button" id="create-button">Create</button>
       </form>
     </section>
     
