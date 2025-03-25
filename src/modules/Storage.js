@@ -3,7 +3,7 @@ import Project from './Project.js'
 import TodoList from './TodoList.js'
 
 export default class Storage {
-  onStartup(){
+  onStartup = (() => {
     if(localStorage.length < 1) {
     const todo = new TodoList()
     
@@ -43,10 +43,10 @@ export default class Storage {
     localStorage.setItem('todo', JSON.stringify(todo))
     } else console.log('already done!')
     
-  }
+  })()
   
   saveToStorage(todo){
-    localStorage.setItem('todo', todo)
+    localStorage.setItem('todo', JSON.stringify(todo))
   }
   
   setupTodo(){
@@ -72,6 +72,20 @@ export default class Storage {
         )
       
   return todo
+  }
+  
+  addTask(projectName, taskName, taskDetails, taskDuedate, taskUrgency){
+    const todo = this.setupTodo();
+    todo
+    .getProject(projectName)
+    .addTask(new Task(
+      taskName,
+      taskDetails,
+      taskDuedate,
+      taskUrgency,
+      projectName))
+    
+    this.saveToStorage(todo)
   }
   
 }
