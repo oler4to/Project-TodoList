@@ -45,11 +45,11 @@ export default class Storage {
     
   })()
   
-  saveToStorage(todo){
+  static saveToStorage(todo){
     localStorage.setItem('todo', JSON.stringify(todo))
   }
   
-  setupTodo(){
+  static setupTodo(){
     const todo = Object.assign(
       new TodoList, 
       JSON.parse(localStorage.getItem('todo')))
@@ -74,7 +74,7 @@ export default class Storage {
   return todo
   }
   
-  addTask(projectName, taskName, taskDetails, taskDuedate, taskUrgency){
+  static addTask(projectName, taskName, taskDetails, taskDuedate, taskUrgency){
     const todo = this.setupTodo();
     todo
     .getProject(projectName)
