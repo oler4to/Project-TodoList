@@ -54,6 +54,23 @@ export default class Storage {
       new TodoList, 
       JSON.parse(localStorage.getItem('todo')))
       
+      todo.setProjects(
+        todo 
+        .getProjects()
+        .map((project) => Object.assign(new Project, project)))
+        
+      todo
+      .getProjects()
+      .map((project) => 
+        project.setTasks(
+          project
+          .getTasks()
+          .map((task) =>
+            Object.assign(new Task, task)
+            )
+          )
+        )
+      
   return todo
   }
   
