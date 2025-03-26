@@ -1,6 +1,7 @@
 import Task from './Task.js'
 import Project from './Project.js'
 import TodoList from './TodoList.js'
+import UserInterface from './UserInterface.js'
 
 export default class Storage {
   onStartup = (() => {
@@ -75,7 +76,9 @@ export default class Storage {
   }
   
   static addTask(projectName, taskName, taskDetails, taskDuedate, taskUrgency){
-    const todo = this.setupTodo();
+    
+    const todo = Storage.setupTodo();
+    
     todo
     .getProject(projectName)
     .addTask(new Task(
@@ -85,7 +88,34 @@ export default class Storage {
       taskUrgency,
       projectName))
     
-    this.saveToStorage(todo)
+    Storage.saveToStorage(todo)
+    
+  }
+  
+  static getProject(projectName){
+    const project = 
+    Storage.setupTodo()
+    .getProject(projectName);
+    
+    return project
+  }
+  
+  static getTask(project,taskName,taskDetails){
+    const task = 
+    project
+    .getTask(taskName,taskDetails);
+    
+    return task
+  }
+  
+  static deleteTask(projectName, taskName){
+    const todo = Storage.setupTodo();
+    
+    todo
+    .getProject(projectName)
+    .deleteTask(taskName)
+    
+    Storage.saveToStorage(todo)
   }
   
 }
