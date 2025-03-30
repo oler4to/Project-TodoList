@@ -20,9 +20,10 @@ export default class Project {
     return this.tasks
   }
   
+  
   getTask(taskName){
-    return this.tasks.find((task) => 
-    task.name === taskName)
+    return this.tasks.find(task => 
+    task.name == taskName)
   }
   
   addTask(t){
