@@ -54,6 +54,11 @@ export default class UserInterface{
          task.name,
          task.details ) 
       ))
+      
+      if(mainDisplay.children.length < 2){
+        mainDisplay.innerHTML += 
+        ` <span> No Tasks Here </span> `
+      }
     
   }
   
@@ -68,12 +73,17 @@ export default class UserInterface{
            mainDisplay, task.project, 
            task.name, task.details
           ))
+          
+      if(mainDisplay.children.length < 2){
+        mainDisplay.innerHTML += 
+        ` <span> No Tasks Here </span> `
+      }
     
   }
   
   static sendFormData(form){
-    if(
-    Storage.checkForDuplicates(form[4].value, form[0].value, form[1].value) !== true){
+    if(Storage.checkForPreExistingTask(form[4].value, form[0].value)
+    !== true){
       
     Storage.addTask(
       form[4].value,
@@ -83,7 +93,7 @@ export default class UserInterface{
       form[3].value,
       )
       
-  } else return false
+  } else { return false }
   
   }
   
@@ -105,13 +115,8 @@ export default class UserInterface{
   static createTask(output, projectName, taskName, taskDetails){
     
     const project = Storage.getProject(projectName);
-    
-    const task = 
-    Storage.getTask(
-      project,
-      taskName,
-      taskDetails,
-      )
+      
+    const task = Storage.getTask(projectName, taskName)
     
     const div = document.createElement('div')
     
@@ -141,8 +146,6 @@ export default class UserInterface{
             UserInterface.deleteTaskButton(project, task))
     
     output.appendChild(div)
-    
-  
     
   }
   
