@@ -5,6 +5,17 @@ import Storage from './Storage.js'
 
 export default class UserInterface{
   
+static onStartup(mainSection, projectMenu){
+    
+    Storage.onStartup()
+    
+    UserInterface.loadHome('Home')
+    UserInterface.loadProjects()
+    UserInterface.loadAllTasks()
+    
+  }
+  
+  
   static loadHome(projectName){
     
     const mainDisplay = document.querySelector('#output');
@@ -161,8 +172,5 @@ export default class UserInterface{
     return deleteButton
     
   }
-  
-  
-  
   
 }
