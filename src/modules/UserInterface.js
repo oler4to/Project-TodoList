@@ -5,6 +5,20 @@ import Storage from './Storage.js'
 
 export default class UserInterface{
   
+  static loadHome(projectName){
+    
+    const mainDisplay = document.querySelector('#output');
+    
+    mainDisplay.innerHTML = '';
+    
+    const sectionHeader = document.createElement('h1');
+    
+          sectionHeader.textContent = projectName;
+          sectionHeader.setAttribute('id', 'section-header')
+          
+      mainDisplay.appendChild(sectionHeader)
+    
+  }
   
   
   static sendFormData(form){
