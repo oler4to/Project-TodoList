@@ -2,6 +2,10 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+  watchOptions: {
+   ignored: /node_modules|\/data\//, // Ignore specific paths
+  }, 
+  
   mode: 'development',
   entry: "./src/index.js",
   output: {
@@ -15,4 +19,12 @@ module.exports = {
       template: "./src/index.html",
     }),
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
+    ],
+  },
 }
