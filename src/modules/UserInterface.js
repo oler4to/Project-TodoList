@@ -65,13 +65,13 @@ export default class UserInterface{
   
   static createTask(output, projectName, taskName, taskDetails){
     
-    const project = Storage.getProject(form[4].value,);
+    const project = Storage.getProject(projectName);
     
     const task = 
     Storage.getTask(
       project,
-      form[0].value,
-      form[1].value,
+      taskName,
+      taskDetails,
       )
     
     const div = document.createElement('div')
