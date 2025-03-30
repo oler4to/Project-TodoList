@@ -4,8 +4,8 @@ import TodoList from './TodoList.js'
 import UserInterface from './UserInterface.js'
 
 export default class Storage {
-  onStartup = (() => {
-    if(localStorage.length < 1) {
+   static onStartup(){
+    if(localStorage.length == 0) {
     const todo = new TodoList()
     
     todo
@@ -42,9 +42,9 @@ export default class Storage {
         ))
     
     localStorage.setItem('todo', JSON.stringify(todo))
-    } else console.log('already done!')
+    } 
     
-  })()
+  }
   
   static saveToStorage(todo){
     localStorage.setItem('todo', JSON.stringify(todo))
