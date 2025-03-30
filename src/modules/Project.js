@@ -28,8 +28,6 @@ export default class Project {
   addTask(t){
     if(this.tasks.every((task) => task.name != t.name)){
       this.tasks.push(t)
-    } else{
-      console.log('Task already exist.')
     }
   }
   
