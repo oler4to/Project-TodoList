@@ -90,6 +90,7 @@ export default class Storage {
     
     Storage.saveToStorage(todo)
     
+  
   }
   
   static getProject(projectName){
@@ -117,5 +118,16 @@ export default class Storage {
     
     Storage.saveToStorage(todo)
   }
+  
+  static checkForPreExistingTask(projectName, taskName, taskDetails){
+    const todo = Storage.setupTodo()
+    
+  return todo
+    .getProject(projectName)
+    .getTasks()
+    .some((task) => task.name == taskName)
+
+  }
+  
   
 }
