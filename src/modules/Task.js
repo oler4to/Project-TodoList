@@ -1,14 +1,9 @@
 export default class Task{
-  constructor(
-    name, 
-    details = 'No Details', 
-    duedate = 'No Date', 
-    urgency = 'Low', 
-    project = 'None')
+  constructor(name, details, duedate, urgency, project)
     {
     this.name = name,
-    this.details = details,
-    this.duedate = duedate,
+    this.details = details || 'No Details',
+    this.duedate = duedate || 'No Date',
     this.urgency = urgency,
     this.project = project
   }
