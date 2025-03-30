@@ -48,7 +48,20 @@ export default class UserInterface{
     
   }
   
-  
+  static createProject(output, projectName){
+    
+    const div = document.createElement('span');
+    
+          div.setAttribute('id', 'project-tab')
+          div.textContent = projectName;
+          div.onclick = () =>{
+            UserInterface.loadHome(projectName)
+            UserInterface.loadTasks(projectName)
+          }
+          
+    output.appendChild(div)
+    
+  }
   
   static createTask(output, projectName, taskName, taskDetails){
     
