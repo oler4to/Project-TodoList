@@ -20,6 +20,19 @@ export default class UserInterface{
     
   }
   
+  static loadTasks(projectName){
+    
+    const mainDisplay = document.querySelector('#output')
+    
+    Storage.setupTodo()
+      .getProject(projectName)
+      .getTasks().forEach((task) =>
+         UserInterface.createTask(
+           mainDisplay, task.project, 
+           task.name, task.details
+          ))
+    
+  }
   
   static sendFormData(form){
     
