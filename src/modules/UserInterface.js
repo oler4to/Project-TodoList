@@ -5,7 +5,7 @@ import Storage from './Storage.js'
 
 export default class UserInterface{
   
-static onStartup(mainSection, projectMenu){
+  static onStartup(mainSection, projectMenu){
     
     Storage.onStartup()
     
@@ -14,7 +14,6 @@ static onStartup(mainSection, projectMenu){
     UserInterface.loadAllTasks()
     
   }
-  
   
   static loadHome(projectName){
     
@@ -73,17 +72,19 @@ static onStartup(mainSection, projectMenu){
   }
   
   static sendFormData(form){
-    
-    if(form[0].value !== "")
-    
-   return Storage.addTask(
+    if(
+    Storage.checkForDuplicates(form[4].value, form[0].value, form[1].value) !== true){
+      
+    Storage.addTask(
       form[4].value,
       form[0].value,
       form[1].value,
       form[2].value,
       form[3].value,
       )
-    
+      
+  } else return false
+  
   }
   
   static createProject(output, projectName){
@@ -140,6 +141,8 @@ static onStartup(mainSection, projectMenu){
             UserInterface.deleteTaskButton(project, task))
     
     output.appendChild(div)
+    
+  
     
   }
   
