@@ -144,6 +144,9 @@ export default class UserInterface{
               
           div.appendChild(
             UserInterface.deleteTaskButton(project, task))
+            
+          div.appendChild(
+            UserInterface.editTaskButton())
     
     output.appendChild(div)
     
@@ -177,6 +180,18 @@ export default class UserInterface{
           }
     return deleteButton
     
+  }
+  
+  static editTaskButton(){
+    const editButton = document.createElement('button');
+          
+          editButton.setAttribute('id', 'task-edit-button')
+          editButton.textContent = 'edit'
+          editButton.onclick = () =>{
+            
+          }
+          
+    return editButton
   }
   
 }
