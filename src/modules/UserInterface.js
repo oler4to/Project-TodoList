@@ -20,6 +20,23 @@ export default class UserInterface{
     
   }
   
+  static loadAllTasks(){
+    
+    const mainDisplay = document.querySelector('#output');
+    
+   Storage.setupTodo()
+    .getProjects()
+    .map((project) => project.getTasks()
+     .forEach((task) =>
+        UserInterface.createTask(
+         mainDisplay, 
+         task.project,
+         task.name,
+         task.details ) 
+      ))
+    
+  }
+  
   static loadTasks(projectName){
     
     const mainDisplay = document.querySelector('#output')
