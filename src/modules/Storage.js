@@ -101,7 +101,7 @@ export default class Storage {
     return project
   }
   
-  static getTask(projectName,taskName,taskDetails){
+  static getTask(projectName,taskName){
     const todo = Storage.setupTodo();
     
     return todo.getProject(projectName)
