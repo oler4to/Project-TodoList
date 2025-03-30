@@ -101,12 +101,11 @@ export default class Storage {
     return project
   }
   
-  static getTask(project,taskName,taskDetails){
-    const task = 
-    project
-    .getTask(taskName,taskDetails);
+  static getTask(projectName,taskName,taskDetails){
+    const todo = Storage.setupTodo();
     
-    return task
+    return todo.getProject(projectName)
+    .getTask(taskName)
   }
   
   static deleteTask(projectName, taskName){
