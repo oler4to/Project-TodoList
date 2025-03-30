@@ -20,6 +20,16 @@ export default class UserInterface{
     
   }
   
+  static loadProjects(){
+    const projectMenu = document.querySelector('#projects-menu')
+    
+    Storage.setupTodo()
+    .getProjects()
+    .map((project) => UserInterface.createProject(projectMenu, project.name)
+    )
+    
+  }
+  
   static loadAllTasks(){
     
     const mainDisplay = document.querySelector('#output');
