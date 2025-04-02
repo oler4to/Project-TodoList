@@ -1,10 +1,13 @@
 import Project from './Project.js'
 
 export default class TodoList{
+  
   constructor(){
     this.projects = [],
+    this.projects.push(new Project('None')),
     this.projects.push(new Project('Personal')),
     this.projects.push(new Project('Work'))
+    
   }
   
   setProjects(projects){
@@ -12,14 +15,14 @@ export default class TodoList{
   }
   
   addProject(project){
-    if(this.projects.every((p) => p.name !== project.name))
+    if(this.projects.every((p) => p.name !== project.name)){
     this.projects.push(project)
-    else console.log('Project already exists!')
+    }
   }
   
   deleteProject(projectName){
-    this.setProjects(this.projects.filter((project) => project.name !==
-    projectName))
+    this.projects = this.projects.filter((project) => project.name !==
+    projectName)
   }
   
   getProjects(){
@@ -28,5 +31,16 @@ export default class TodoList{
   
   getProject(projectName){
     return this.projects.find((p) => p.name === projectName)
+  }
+  
+  getAllTasks(){
+    const allTasks = new Project('All Tasks')
+    
+    this.projects.map(
+      project => { for( let task of project.tasks){
+        allTasks.tasks.push(task)
+      } })
+    
+    return allTasks
   }
 }
