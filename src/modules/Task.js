@@ -1,3 +1,5 @@
+import {formatDate} from 'date-fns'
+
 export default class Task{
   constructor(name, details, duedate, urgency, project)
     {
@@ -8,24 +10,31 @@ export default class Task{
     this.project = project
   }
   
-  setName(taskName){
-    this.name = taskName
-  }
-  setDetails(taskDetails){
-    this.name = taskDetails
-  }
-  setDuedate(taskDuedate){
-    this.name = taskDuedate
-  }
-  setUrgency(taskUrgency){
-    this.name = taskUrgency
-  }
-  setProject(taskProject){
-    this.name = taskProject
+  setFields(tName, tDetails, tDuedate, tUrgency){
+      this.name = tName;
+      this.details = tDetails;
+      this.duedate = tDuedate;
+      this.urgency = tUrgency;
   }
   
   getName(){
     return this.name
+  }
+  
+  setDate(){
+    if (this.duedate === ''){
+      this.duedate = 'No Date'
+    }
+    
+    if(this.duedate !== 'No Date'){
+      this.duedate = formatDate(this.duedate, 'd MMMM yyyy')
+      
+    }
+  }
+  
+  getDate(){
+    this.setDate()
+    return this.duedate
   }
 }
 
