@@ -141,6 +141,26 @@ export default class Storage {
     return todo.getProjects()
   }
   
+  static deleteProject(projectName){
+    const todo = Storage.getTodo();
+    
+    todo.deleteProject(projectName);
+    
+    console.log(todo)
+    
+    Storage.updateStorage(todo)
+  }
+  
+  static addProject(projectName){
+    const todo = Storage.getTodo()
+    
+    todo.addProject(new Project(projectName));
+    
+    Storage.updateStorage(todo)
+    
+    return Storage.getProject(projectName)
+  }
+  
   static getTask(projectName,taskName){
     const todo = Storage.getTodo();
     
