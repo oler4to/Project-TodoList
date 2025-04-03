@@ -2,8 +2,10 @@
   
   <head>
     <title>TodoList</title>
-  </head>
+  <script defer src="main.js"></script></head>
   <body>
+    
+    
     <section style='display:none' id="task-form-popup">
       
     </section>
@@ -14,12 +16,12 @@
     </section>
     
     
-    <section id="projects-menu">
+    <section id="projects-menu" data-status="display">
       <h1>Projects</h1>
       
       <div id="normal-section"></div>
       
-      <div id="time-based-section"></div>
+      <div id="time-based-section"> </div>
       
     </section>
     
@@ -28,6 +30,8 @@
       <section id="tasks-container">
         
       </section>
+      
+      <button id="add-task">+</button>
     </main>
     
     <section>
