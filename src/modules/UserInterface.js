@@ -11,9 +11,11 @@ export default class UserInterface{
   static start(){
     
     Storage.onStartup()
+    
     UserInterface.loadHome('All')
     UserInterface.loadNormalLists()
     UserInterface.loadTimeBasedLists()
+    
     UserInterface.initAddTaskButton()
     UserInterface.initAddListButton()
     UserInterface.initEditListsButton()
@@ -27,12 +29,12 @@ export default class UserInterface{
     const tasksContainer = document.querySelector('#tasks-container');
     
     UserInterface.clearDisplay(tasksContainer)
-    UserInterface.sectionHeader(listName)
+    UserInterface.makeSectionHead(listName)
     UserInterface.loadTasks(tasksContainer, listName)
     
   }
   
-  static sectionHeader(listName){
+  static makeSectionHead(listName){
     const sectionHeader = document.getElementById('main-header');
     
           sectionHeader.textContent = listName;
