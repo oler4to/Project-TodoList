@@ -44,21 +44,21 @@ export default class UserInterface{
     tasksContainer.innerHTML = ''
   }
   
-  static clearFormInput(ext){
+  static clearFormInput(extention){
     document
-    .querySelector(`#task-${ext}`)[0].value = '';
+    .querySelector(`#task-${extention}`)[0].value = '';
     
     document
-    .querySelector(`#task-${ext}`)[1].value = '';
+    .querySelector(`#task-${extention}`)[1].value = '';
     
     document
-    .querySelector(`#task-${ext}`)[2].value = '';
+    .querySelector(`#task-${extention}`)[2].value = '';
     
     document
-    .querySelector(`#task-${ext}`)[3].value = 'No Urgency';
+    .querySelector(`#task-${extention}`)[3].value = 'No Urgency';
     
     document
-    .querySelector(`#task-${ext}`)[4].value = 'None';
+    .querySelector(`#task-${extention}`)[4].value = 'None';
     
   }
   
@@ -437,8 +437,8 @@ export default class UserInterface{
     } else alert('I think you already have this list')
   }
   
-  static getFormInput(ext){
-    const form = document.querySelector(`#task-${ext}`)
+  static getFormInput(extention){
+    const form = document.querySelector(`#task-${extention}`)
     
     let data = {
       name: form[0].value,
