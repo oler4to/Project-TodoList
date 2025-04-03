@@ -144,33 +144,6 @@ export default class UserInterface{
       }
   }
   
-  static addNewTask(tasksContainer, data){
-    
-    if(Storage.checkForPreExistingTask(
-    data.list, data.name) !== true){
-      
-      if(data.name !== ''){
-        
-      
-      tasksContainer.insertBefore(
-       UserInterface.createDOMTask(
-        Storage.addTask(data)), 
-        tasksContainer.firstElementChild)
-      
-      UserInterface.closeCreateTaskPopup()
-      UserInterface.checkForEmptyDisplay()
-      
-      } else {
-        alert('Maybe try giving your task a name?')
-        
-      }
-    
-    } else {
-      alert("How about you create a task that doesn't already exist?'") 
-    }
-    
-  }
-  
   static createListTab(listName){
     const listsMenu =
     document.getElementById('lists-menu')
@@ -461,20 +434,42 @@ export default class UserInterface{
   }
   
   static createTask(currentList, content){
-    
     const tasksContainer = document.querySelector('#tasks-container')
     
-    if(currentList == 'All'){
+    const data = UserInterface.getFormInput('form')
+    
+    if(Storage.checkForPreExistingTask(
+    data.list, data.name) !== true){
       
-      UserInterface.addNewTask(
-        tasksContainer, content)
-         
-    } else if(currentList == content.list && content.list != 'None'){
+      if(data.name !== ''){
+    
+          if(currentList == 'All'){
+        
+          tasksContainer.insertBefore(
+           UserInterface.createDOMTask(
+              Storage.addTask(data)), 
+            tasksContainer.firstElementChild)
+           
+        } else if(currentList == content.list && content.list != 'None'){
+          
+          tasksContainer.insertBefore(
+            UserInterface.createDOMTask(
+              Storage.addTask(data)), 
+            tasksContainer.firstElementChild)
+        } else {
+          
+          Storage.addTask(content)
+        }
+        
+      UserInterface.closeCreateTaskPopup()
+      UserInterface.checkForEmptyDisplay()
+    
+      } else {
+        alert('Maybe try giving your task a name?')
+      }
       
-        UserInterface.addNewTask(
-          tasksContainer, content)
     } else {
-      Storage.addTask(content)
+      alert("How about you create a task that doesn't already exist?'") 
     }
     
   }
