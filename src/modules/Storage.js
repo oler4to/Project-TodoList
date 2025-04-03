@@ -187,6 +187,12 @@ export default class Storage {
     .some((task) => task.name === taskName)
   }
   
-  
+  static checkForPreExistingProject(projectName){
+    const todo = Storage.getTodo()
+    
+    return todo
+      .projects
+      .some((project) => project.name === projectName)
+  }
   
 }
