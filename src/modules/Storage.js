@@ -161,6 +161,27 @@ export default class Storage {
     return Storage.getProject(projectName)
   }
   
+  static getTasksDue(projectName){
+    const todo = Storage.getTodo()
+    
+    if(projectName == 'Today'){
+      return todo
+      .getAllTasks()
+      .getTasksDueToday()
+    }
+    if(projectName == 'This Week'){
+      return todo
+      .getAllTasks()
+      .getTasksDueThisWeek()
+    } 
+    
+    if(projectName == 'Overdue'){
+      return todo
+      .getAllTasks()
+      .getTasksOverdue() 
+    }
+  }
+  
   static getTask(projectName,taskName){
     const todo = Storage.getTodo();
     
