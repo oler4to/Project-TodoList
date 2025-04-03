@@ -433,16 +433,30 @@ export default class UserInterface{
     return listForm[0].value
   }
   
+  static validateData(data){
+    if(Storage.checkForPreExistingTask(
+    data.list, data.name) !== true){
+      
+      if(data.name !== ''){
+        
+        return true
+        
+      } else {
+        alert('Maybe try giving your task a name?')
+      }
+      
+    } else {
+      alert("How about you create a task that doesn't already exist?'") 
+    }
+  }
+  
   static createTask(currentList, content){
     const tasksContainer = document.querySelector('#tasks-container')
     
     const data = UserInterface.getFormInput('form')
     
-    if(Storage.checkForPreExistingTask(
-    data.list, data.name) !== true){
-      
-      if(data.name !== ''){
-    
+        if(UserInterface.validateData(data)){
+          
           if(currentList == 'All'){
         
           tasksContainer.insertBefore(
@@ -460,18 +474,11 @@ export default class UserInterface{
           
           Storage.addTask(content)
         }
-        
+          
       UserInterface.closeCreateTaskPopup()
       UserInterface.checkForEmptyDisplay()
-    
-      } else {
-        alert('Maybe try giving your task a name?')
-      }
-      
-    } else {
-      alert("How about you create a task that doesn't already exist?'") 
-    }
-    
+          
+        }
   }
   
   static initAddTaskButton(){
