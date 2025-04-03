@@ -3,10 +3,24 @@ import Project from './Project.js'
 import TodoList from './TodoList.js'
 import UserInterface from './UserInterface.js'
 
+import { isPast, isAfter, add} from 'date-fns'
+
 export default class Storage {
-   static onStartup(){
+  
+  static onStartup(){
     if(localStorage.length == 0) {
     const todo = new TodoList()
+    
+    todo
+    .getProject('None')
+    .addTask(
+      new Task(
+        'This is not an important task',
+        'Remember to do nothing!',
+        '2025-04-23',
+        'Medium',
+        'None'
+        ))
     
     todo
     .getProject('Personal')
@@ -14,7 +28,7 @@ export default class Storage {
       new Task(
         'This is a random task',
         'Remember to do some random thing!',
-        '25/03/2025',
+        '2025-04-01',
         'Medium',
         'Personal'
         ))
@@ -25,7 +39,7 @@ export default class Storage {
       new Task(
         'This is another random task',
         'Remember to do some other random things!',
-        '26/03/2025',
+        '2025-04-01',
         'High',
         'Personal'
         ))
@@ -36,21 +50,23 @@ export default class Storage {
       new Task(
         'This time its an IMPORTANT task for work',
         'Remember to do some that very important thing for that one person!',
-        '29/03/2025',
+        '2025-05-23',
         'High',
         'Work'
         ))
     
-    localStorage.setItem('todo', JSON.stringify(todo))
-    } 
+    Storage.updateStorage(todo)
     
   }
-  
-  static saveToStorage(todo){
-    localStorage.setItem('todo', JSON.stringify(todo))
   }
   
-  static setupTodo(){
+  static updateStorage(todo){
+    localStorage.setItem(
+      'todo', JSON.stringify(todo))
+  }
+  
+  static getTodo(){
+    
     const todo = Object.assign(
       new TodoList, 
       JSON.parse(localStorage.getItem('todo')))
@@ -58,7 +74,8 @@ export default class Storage {
       todo.setProjects(
         todo 
         .getProjects()
-        .map((project) => Object.assign(new Project, project)))
+        .map((project) => Object.assign(
+          new Project, project )))
         
       todo
       .getProjects()
@@ -66,67 +83,62 @@ export default class Storage {
         project.setTasks(
           project
           .getTasks()
-          .map((task) =>
-            Object.assign(new Task, task)
-            )
-          )
-        )
+          .map((task) => 
+            Object.assign(new Task, task ))))
       
-  return todo
+    return todo
+    
   }
   
-  static addTask(projectName, taskName, taskDetails, taskDuedate, taskUrgency){
+  static addTask(task){
     
-    const todo = Storage.setupTodo();
+    const todo = Storage.getTodo();
     
     todo
-    .getProject(projectName)
+    .getProject(task.project)
     .addTask(new Task(
-      taskName,
-      taskDetails,
-      taskDuedate,
-      taskUrgency,
-      projectName))
+      task.name, task.details, task.duedate, task.urgency, task.project))
     
-    Storage.saveToStorage(todo)
+    Storage.updateStorage(todo)
     
-  
+    return Storage.getTask(task.project, task.name)
+
   }
   
   static getProject(projectName){
     const project = 
-    Storage.setupTodo()
+    Storage.getTodo()
     .getProject(projectName);
     
     return project
   }
   
   static getTask(projectName,taskName){
-    const todo = Storage.setupTodo();
+    const todo = Storage.getTodo();
     
     return todo.getProject(projectName)
     .getTask(taskName)
   }
   
   static deleteTask(projectName, taskName){
-    const todo = Storage.setupTodo();
+    const todo = Storage.getTodo();
     
     todo
     .getProject(projectName)
     .deleteTask(taskName)
     
-    Storage.saveToStorage(todo)
+    Storage.updateStorage(todo)
   }
   
-  static checkForPreExistingTask(projectName, taskName, taskDetails){
-    const todo = Storage.setupTodo()
+  static checkForPreExistingTask(projectName, taskName){
+    const todo = Storage.getTodo()
     
   return todo
     .getProject(projectName)
     .getTasks()
-    .some((task) => task.name == taskName)
-
+    .some((task) => task.name === taskName)
   }
+  
   
   
 }
