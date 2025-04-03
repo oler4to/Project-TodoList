@@ -3,8 +3,6 @@ import Project from './Project.js'
 import TodoList from './TodoList.js'
 import UserInterface from './UserInterface.js'
 
-import { isPast, isAfter, add} from 'date-fns'
-
 export default class Storage {
   
   static onStartup(){
