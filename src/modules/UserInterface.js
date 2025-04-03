@@ -8,7 +8,7 @@ import { formatDate } from 'date-fns'
 export default class UserInterface{
   static currentProject = 'All'
   
-  static onStartup(){
+  static start(){
     
     Storage.onStartup()
     UserInterface.loadHome('All')
