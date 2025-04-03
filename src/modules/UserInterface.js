@@ -476,6 +476,8 @@ export default class UserInterface{
   }
   
   static initAddTaskButton(){
+    const main = document.querySelector('main');
+    
     const addTaskButton = document.getElementById('add-task');
     
           addTaskButton.setAttribute('id', 'add-task');
@@ -485,6 +487,10 @@ export default class UserInterface{
           
       addTaskButton.onclick = () => {
         UserInterface.openCreateTaskPopup()
+      
+      main
+      .querySelector('#add-task')
+      .style.display = 'none'
       
       }
           
@@ -757,6 +763,8 @@ export default class UserInterface{
 }
 
   static createTaskForm(){
+    const main = document.querySelector('main')
+    
     const newTaskForm = document.createElement('form')
     
           newTaskForm.setAttribute('id', 'task-form')
@@ -831,6 +839,10 @@ export default class UserInterface{
     .querySelector('#cancel-button')
     .onclick = () => {
       UserInterface.closeCreateTaskPopup()
+      
+      main
+      .querySelector('#add-task')
+      .style.display = 'block'
     }
     
     newTaskForm
@@ -840,6 +852,10 @@ export default class UserInterface{
       UserInterface.createTask(
         UserInterface.currentProject,
         UserInterface.getFormInput('form'))
+        
+      main
+      .querySelector('#add-task')
+      .style.display = 'block'
         
     }
     
