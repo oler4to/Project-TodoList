@@ -17,6 +17,8 @@ export default class UserInterface{
     UserInterface.initAddTaskButton()
     UserInterface.initAddProjectButton()
     UserInterface.initEditProjectsButton()
+    UserInterface.initCancelEditProjectsButton()
+    UserInterface.initSaveChangesButton()
     
   }
   
@@ -166,6 +168,11 @@ export default class UserInterface{
   }
   
   static createProjectTab(projectName){
+    const projectsMenu =
+    document.getElementById('projects-menu')
+    
+    console.log(projectsMenu)
+    
     const div = document.createElement('span');
           div.setAttribute('id', 'project-tab')
           
@@ -173,9 +180,10 @@ export default class UserInterface{
       
       div.innerHTML = `← Back to Mainpage`;
       div.onclick = () =>{
+        if(projectsMenu.childNodes[8].style.display !== 'none'){
         UserInterface.currentProject = 'All',
         UserInterface.loadHome('All')
-      }
+      }}
     
     } else {
       div.innerHTML = 
@@ -203,9 +211,11 @@ export default class UserInterface{
           }
       
       div.onclick = () => {
+      if(projectsMenu.childNodes[8].style.display !== 'none'){
         UserInterface.currentProject = projectName,
         UserInterface.loadHome(
           UserInterface.currentProject)
+      }
       }
       
     }
@@ -362,18 +372,27 @@ export default class UserInterface{
   }
   
   static addProject(normalProjects, projectName){
+    
+    const projectsMenu = document.getElementById('projects-menu')
       
     if(Storage.checkForPreExistingProject(projectName) !== true){
         
         if(projectName != ''){
-          
-        UserInterface.closeNewProjectPopup()
-          
+
         Storage.addProject(projectName),
           
           normalProjects
           .appendChild(UserInterface.createProjectTab(projectName))
           
+        UserInterface.closeNewProjectPopup()
+        
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'block'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'block'
       
         } else { alert('Try giving your project a name') }
       
@@ -438,6 +457,8 @@ export default class UserInterface{
   }
   
   static initAddProjectButton(){
+    const projectsMenu = document.getElementById('projects-menu');
+    
     const addProjectButton = document.createElement('button');
     
           addProjectButton.setAttribute('id', 'add-project');
@@ -448,11 +469,17 @@ export default class UserInterface{
           
       addProjectButton
       .onclick = () => {
+        
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'none'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'none'
+        
         UserInterface.openNewProjectPopup()
         
-        addProjectButton
-        .nextSibling
-        .style.display = 'none'
       }
       
     document
@@ -461,23 +488,41 @@ export default class UserInterface{
   }
   
   static initEditProjectsButton(){
+    const projectsMenu = document.getElementById('projects-menu')
+    
+    const project = document.querySelector('#normal-section #project-tab')
+    
     const editButton = document.createElement('button')
     
           editButton.setAttribute('id', 'edit-projects')
           editButton.textContent = 'Edit'
-          
+    
       editButton.onclick = () => {
         UserInterface.editProjectsMenu()
-        UserInterface.initCancelEditProjectsButton()
         
-       editButton
-       .previousSibling
-       .style.display = 'none'
-       
-        editButton
-        .style
-        .display = 'none'
-       
+        
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'none'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'none'
+        
+        
+        projectsMenu
+        .querySelector('#cancel-button')
+        .style.display = 'block'
+        
+        if(project.hasAttribute('data-name')){
+        project
+        .querySelector('#delete-project')
+        .style.display = 'block'
+        
+        project
+        .querySelector('.project-task-count')
+        .style.display = 'none'
+        }
       }
     
     document
@@ -487,24 +532,35 @@ export default class UserInterface{
   }
   
   static initCancelEditProjectsButton(){
+    const projectsMenu = document.getElementById('projects-menu')
+    
+    const project = document.querySelector('#projects-menu #project-tab')
+    
     const cancelButton = document.createElement('button');
           
           cancelButton.setAttribute('id', 'cancel-button');
           cancelButton.textContent = 'Cancel'
-          cancelButton.style.display = 'block'
+          cancelButton.style.display = 'none'
           
       cancelButton
       .onclick = () => {
-        
-        const editButton = document.querySelector('#edit-projects')
-       
-        const addProjectButton = document.querySelector('#add-project')
-       
        UserInterface.cancelEditProjectsMenu()
        
-       editButton.style.display = 'block';
-       addProjectButton.style.display = 'block';
-       cancelButton.style.display = 'none';
+       projectsMenu
+       .querySelector('#edit-projects')
+       .style.display = 'block'
+       
+       projectsMenu
+       .querySelector('#add-project')
+       .style.display = 'block'
+       
+       projectsMenu
+       .querySelector('#cancel-button')
+       .style.display = 'none'
+       
+       project
+      .querySelector('.project-task-count')
+      .style.display = 'none'
        
        
       }
@@ -515,22 +571,55 @@ export default class UserInterface{
   }
   
   static initSaveChangesButton(){
+    const projectsMenu = document.getElementById('projects-menu');
+    
+    const project = document.querySelector('#projects-menu #project-tab')
+    
     const saveChangesButton = document.createElement('button')
           
           saveChangesButton.setAttribute('id', 'save-changes')
+          saveChangesButton.textContent = 'Save Changes'
           saveChangesButton.style.display = 'none'
           
       saveChangesButton
       .onclick = () => {
         UserInterface.cancelEditProjectsMenu()
+      
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'block'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'block'
+        
+        projectsMenu
+        .querySelector('#save-changes')
+        .style.display = 'none'
+        
+        projectsMenu
+        .querySelector('#cancel-button')
+        .style.display = 'none'
+        
+        project
+        .querySelector('#delete-project')
+        .style.display = 'none'
+        
+        project
+        .querySelector('.project-task-count')
+        .style.display = 'none'
+        
       }
       
     document
-    .querySelector('#projects-menu')
+    .getElementById('projects-menu')
     .appendChild(saveChangesButton)
   }
   
   static createProjectForm(){
+    
+    const projectsMenu = document.getElementById('projects-menu')
+    
     const newProjectForm = document.createElement('form')
     
           newProjectForm.setAttribute('id', 'project-form')
@@ -568,6 +657,14 @@ export default class UserInterface{
       .querySelector('#cancel-button')
       .onclick = () => {
         UserInterface.closeNewProjectPopup()
+        
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'block'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'block'
     }
     
     document
@@ -767,7 +864,9 @@ export default class UserInterface{
   
   static editProjectsMenu(){
     
-    const normalProjects = document.getElementById('normal-section')
+    const normalProjects = document.getElementById('normal-section');
+    
+    const projectsMenu = document.getElementById('projects-menu');
     
     normalProjects
     .childNodes
@@ -779,20 +878,41 @@ export default class UserInterface{
           Delete
           </button>`
           
-        project
-        .querySelector('.project-task-count')
-        .style.display = 'none'
+        
         
         project
         .querySelector('#delete-project')
         .onclick = () => {
-          Storage.deleteProject(project.getAttribute('data-name')),
+          Storage.deleteProject(project.getAttribute('data-name'))
+        
           
-          normalProjects
+       if(Storage.getProjects().length < 2){
+          projectsMenu
+          
+          .querySelector('#add-project')
+          .style.display = 'block';
+          
+          projectsMenu
+          .querySelector('#cancel-button')
+          .style.display = 'none';
+          
+          projectsMenu
+          .querySelector('#save-changes')
+          .style.display = 'none';
+          
+        } else {
+          projectsMenu
+          .querySelector('#save-changes')
+          .style.display = 'block'
+        }
+        
+        normalProjects
           .removeChild(project)
+          
           
           UserInterface.loadTimeBasedProjects()
           UserInterface.updateTaskCount()
+          
         }
         
       } })
@@ -806,19 +926,13 @@ export default class UserInterface{
     .childNodes
     .forEach(project => {
       if(project.hasAttribute('data-name')){
+        
         project
         .querySelector('.project-task-count')
         .textContent = Storage.getProject(
           project.getAttribute('data-name'))
           .getTasks().length
-          
-        project
-        .querySelector('.project-task-count')
-        .style.display = 'block'
         
-        project
-        .querySelector('#save-changes')
-        .style.display = 'none'
       }
       
     })
