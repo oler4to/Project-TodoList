@@ -45,20 +45,23 @@ export default class UserInterface{
   }
   
   static clearFormInput(extention){
-    document
-    .querySelector(`#task-${extention}`)[0].value = '';
     
-    document
-    .querySelector(`#task-${extention}`)[1].value = '';
-    
-    document
-    .querySelector(`#task-${extention}`)[2].value = '';
-    
-    document
-    .querySelector(`#task-${extention}`)[3].value = 'No Urgency';
-    
-    document
-    .querySelector(`#task-${extention}`)[4].value = 'None';
+    for(let i = 0; i <= 4; i++){
+      document
+      .querySelector(`#task-${extention}`)[i]
+      .value = ''
+      
+      if(i == 3){
+        document
+        .querySelector(`#task-${extention}`)[i]
+        .value = 'No Urgency'
+      } else if (i == 4){
+        document
+        .querySelector(`#task-${extention}`)[i]
+        .value = 'None'
+      }
+      
+    }
     
   }
   
