@@ -1,43 +1,43 @@
-import Project from './Project.js'
+import List from './List.js'
 
 export default class TodoList{
   
   constructor(){
-    this.projects = [],
-    this.projects.push(new Project('None')),
-    this.projects.push(new Project('Personal')),
-    this.projects.push(new Project('Work'))
+    this.lists = [],
+    this.lists.push(new List('None')),
+    this.lists.push(new List('Personal')),
+    this.lists.push(new List('Work'))
     
   }
   
-  setProjects(projects){
-    this.projects = projects
+  setLists(lists){
+    this.lists = lists
   }
   
-  addProject(project){
-    if(this.projects.every((p) => p.name !== project.name)){
-    this.projects.push(project)
+  addList(list){
+    if(this.lists.every((p) => p.name !== list.name)){
+    this.lists.push(list)
     }
   }
   
-  deleteProject(projectName){
-    this.projects = this.projects.filter((project) => project.name !==
-    projectName)
+  deleteList(listName){
+    this.lists = this.lists.filter((list) => list.name !==
+    listName)
   }
   
-  getProjects(){
-    return this.projects
+  getLists(){
+    return this.lists
   }
   
-  getProject(projectName){
-    return this.projects.find((p) => p.name === projectName)
+  getList(listName){
+    return this.lists.find((p) => p.name === listName)
   }
   
   getAllTasks(){
-    const allTasks = new Project('All Tasks')
+    const allTasks = new List('All Tasks')
     
-    this.projects.map(
-      project => { for( let task of project.tasks){
+    this.lists.map(
+      list => { for( let task of list.tasks){
         allTasks.tasks.push(task)
       } })
     

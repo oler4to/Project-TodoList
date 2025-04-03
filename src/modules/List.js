@@ -2,22 +2,22 @@ import {isWithinInterval, isToday, subHours, isBefore, addDays} from 'date-fns'
 import Storage from './Storage.js'
 
 
-export default class Project {
+export default class List {
   constructor(name){
     this.name = name,
     this.tasks = []
   }
   
-  setName(projectName){
-    this.name = projectName
+  setName(listName){
+    this.name = listName
   }
   
   getName(){
     return this.name
   }
   
-  setTasks(projectTasks){
-    this.tasks = projectTasks
+  setTasks(listTasks){
+    this.tasks = listTasks
   }
   
   getTasks(){

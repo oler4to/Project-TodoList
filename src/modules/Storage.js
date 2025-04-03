@@ -1,5 +1,5 @@
 import Task from './Task.js'
-import Project from './Project.js'
+import List from './List.js'
 import TodoList from './TodoList.js'
 import UserInterface from './UserInterface.js'
 
@@ -10,7 +10,7 @@ export default class Storage {
     const todo = new TodoList()
     
     todo
-    .getProject('None')
+    .getList('None')
     .addTask(
       new Task(
         'This is not an important task',
@@ -21,7 +21,7 @@ export default class Storage {
         ))
     
     todo
-    .getProject('Personal')
+    .getList('Personal')
     .addTask(
       new Task(
         'This is a random task',
@@ -32,7 +32,7 @@ export default class Storage {
         ))
     
     todo
-    .getProject('Personal')
+    .getList('Personal')
     .addTask(
       new Task(
         'This is another random task',
@@ -43,7 +43,7 @@ export default class Storage {
         ))
     
     todo
-    .getProject('Work')
+    .getList('Work')
     .addTask(
       new Task(
         'This time its an IMPORTANT task for work',
@@ -69,17 +69,17 @@ export default class Storage {
       new TodoList, 
       JSON.parse(localStorage.getItem('todo')))
       
-      todo.setProjects(
+      todo.setLists(
         todo 
-        .getProjects()
-        .map((project) => Object.assign(
-          new Project, project )))
+        .getLists()
+        .map((list) => Object.assign(
+          new List, list )))
         
       todo
-      .getProjects()
-      .map((project) => 
-        project.setTasks(
-          project
+      .getLists()
+      .map((list) => 
+        list.setTasks(
+          list
           .getTasks()
           .map((task) => 
             Object.assign(new Task, task ))))
@@ -93,28 +93,28 @@ export default class Storage {
     const todo = Storage.getTodo();
     
     todo
-    .getProject(task.project)
+    .getList(task.list)
     .addTask(new Task(
-      task.name, task.details, task.duedate, task.urgency, task.project))
+      task.name, task.details, task.duedate, task.urgency, task.list))
     
     Storage.updateStorage(todo)
     
-    return Storage.getTask(task.project, task.name)
+    return Storage.getTask(task.list, task.name)
 
   }
   
   static updateTask(oldTask, newTask){
     const todo = Storage.getTodo()
     
-    if(todo.getProject(oldTask.project).getName !== newTask.project){
+    if(todo.getList(oldTask.list).getName !== newTask.list){
       
       Storage.deleteTask(
-        oldTask.project, oldTask.name);
+        oldTask.list, oldTask.name);
       Storage.addTask(newTask);
         
     } else {
       
-    todo.getProject(oldTask.project).getTask(oldTask.name).setFields(
+    todo.getList(oldTask.list).getTask(oldTask.name).setFields(
       newTask.name, newTask.details,
       newTask.duedate, newTask.urgency )
       
@@ -122,96 +122,96 @@ export default class Storage {
       
     }
     
-     return Storage.getTask(newTask.project, newTask.name)
+     return Storage.getTask(newTask.list, newTask.name)
   }
   
-  static getProject(projectName){
-    const project = 
+  static getList(listName){
+    const list = 
     Storage.getTodo()
-    .getProject(projectName);
+    .getList(listName);
     
-    return project
+    return list
   }
   
-  static getProjects(){
+  static getLists(){
     const todo = Storage.getTodo()
     
-    return todo.getProjects()
+    return todo.getLists()
   }
   
-  static deleteProject(projectName){
+  static deleteList(listName){
     const todo = Storage.getTodo();
     
-    todo.deleteProject(projectName);
+    todo.deleteList(listName);
     
     console.log(todo)
     
     Storage.updateStorage(todo)
   }
   
-  static addProject(projectName){
+  static addList(listName){
     const todo = Storage.getTodo()
     
-    todo.addProject(new Project(projectName));
+    todo.addList(new List(listName));
     
     Storage.updateStorage(todo)
     
-    return Storage.getProject(projectName)
+    return Storage.getList(listName)
   }
   
-  static getTasksDue(projectName){
+  static getTasksDue(listName){
     const todo = Storage.getTodo()
     
-    if(projectName == 'Today'){
+    if(listName == 'Today'){
       return todo
       .getAllTasks()
       .getTasksDueToday()
     }
-    if(projectName == 'This Week'){
+    if(listName == 'This Week'){
       return todo
       .getAllTasks()
       .getTasksDueThisWeek()
     } 
     
-    if(projectName == 'Overdue'){
+    if(listName == 'Overdue'){
       return todo
       .getAllTasks()
       .getTasksOverdue() 
     }
   }
   
-  static getTask(projectName,taskName){
+  static getTask(listName,taskName){
     const todo = Storage.getTodo();
     
-    return todo.getProject(projectName)
+    return todo.getList(listName)
     .getTask(taskName)
   }
   
-  static deleteTask(projectName, taskName){
+  static deleteTask(listName, taskName){
     const todo = Storage.getTodo();
     
     todo
-    .getProject(projectName)
+    .getList(listName)
     .deleteTask(taskName)
     
     Storage.updateStorage(todo)
   }
   
-  static checkForPreExistingTask(projectName, taskName){
+  static checkForPreExistingTask(listName, taskName){
     const todo = Storage.getTodo()
     
   return todo
-    .getProject(projectName)
+    .getList(listName)
     .getTasks()
     .some((task) => task.name === taskName)
   }
   
-  static checkForPreExistingProject(projectName){
+  static checkForPreExistingList(listName){
     const todo = Storage.getTodo()
     
     return todo
-      .projects
-      .some((project) => project.name === projectName)
+      .lists
+      .some((list) => list.name === listName)
   }
   
 }

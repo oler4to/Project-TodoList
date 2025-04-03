@@ -1,41 +1,41 @@
 import Task from './Task.js'
-import Project from './Project.js'
+import List from './List.js'
 import TodoList from './TodoList.js'
 import Storage from './Storage.js'
 
 import { formatDate } from 'date-fns'
 
 export default class UserInterface{
-  static currentProject = 'All'
+  static currentList = 'All'
   
   static start(){
     
     Storage.onStartup()
     UserInterface.loadHome('All')
-    UserInterface.loadNormalProjects()
-    UserInterface.loadTimeBasedProjects()
+    UserInterface.loadNormalLists()
+    UserInterface.loadTimeBasedLists()
     UserInterface.initAddTaskButton()
-    UserInterface.initAddProjectButton()
-    UserInterface.initEditProjectsButton()
-    UserInterface.initCancelEditProjectsButton()
+    UserInterface.initAddListButton()
+    UserInterface.initEditListsButton()
+    UserInterface.initCancelEditListsButton()
     UserInterface.initSaveChangesButton()
     
   }
   
-  static loadHome(projectName){
+  static loadHome(listName){
     
     const tasksContainer = document.querySelector('#tasks-container');
     
     UserInterface.clearDisplay(tasksContainer)
-    UserInterface.sectionHeader(projectName)
-    UserInterface.loadTasks(tasksContainer, projectName)
+    UserInterface.sectionHeader(listName)
+    UserInterface.loadTasks(tasksContainer, listName)
     
   }
   
-  static sectionHeader(projectName){
+  static sectionHeader(listName){
     const sectionHeader = document.getElementById('main-header');
     
-          sectionHeader.textContent = projectName;
+          sectionHeader.textContent = listName;
   }
   
   static clearDisplay(tasksContainer){
@@ -60,42 +60,42 @@ export default class UserInterface{
     
   }
   
-  static loadNormalProjects(){
+  static loadNormalLists(){
     
-    const normalProjects = document.querySelector('#normal-section');
+    const normalLists = document.querySelector('#normal-section');
     
-          normalProjects.innerHTML = ''
+          normalLists.innerHTML = ''
     
     Storage.getTodo()
-    .getProjects()
-    .map((project) => {
-      normalProjects.appendChild(UserInterface.createProjectTab(project.name))
+    .getLists()
+    .map((list) => {
+      normalLists.appendChild(UserInterface.createListTab(list.name))
     })
   }
   
-  static loadTimeBasedProjects(){
-    const timeBasedProjects = document.querySelector('#time-based-section');
+  static loadTimeBasedLists(){
+    const timeBasedLists = document.querySelector('#time-based-section');
     
-          timeBasedProjects.innerHTML = ''
+          timeBasedLists.innerHTML = ''
     
-    let projectNames = ['Today', 'This Week', 'Overdue']
+    let listNames = ['Today', 'This Week', 'Overdue']
     
-    for(let project of projectNames){
-      timeBasedProjects.appendChild(
-        UserInterface.createProjectTab(
-          project))
+    for(let list of listNames){
+      timeBasedLists.appendChild(
+        UserInterface.createListTab(
+          list))
     }
   }
   
-  static loadTasks(tasksContainer, projectName){
+  static loadTasks(tasksContainer, listName){
     
-    if(projectName == 'All'){
+    if(listName == 'All'){
       
       Storage.getTodo()
-      .getProjects()
-      .map((project) =>{
+      .getLists()
+      .map((list) =>{
   
-        project
+        list
         .getTasks()
         .forEach( task => {
         tasksContainer.appendChild(
@@ -106,12 +106,12 @@ export default class UserInterface{
       })
       
     } else if(
-      (projectName == 'Today') || 
-      (projectName =='This Week') ||
-      (projectName =='Overdue')){
+      (listName == 'Today') || 
+      (listName =='This Week') ||
+      (listName =='Overdue')){
         
       Storage
-      .getTasksDue(projectName)
+      .getTasksDue(listName)
         .map((task) => {
           tasksContainer.appendChild(
             UserInterface.createDOMTask(task))
@@ -121,7 +121,7 @@ export default class UserInterface{
       
     Storage
     .getTodo()
-      .getProject(projectName)
+      .getList(listName)
       .getTasks()
         .forEach((task) =>
           tasksContainer.appendChild(
@@ -143,7 +143,7 @@ export default class UserInterface{
   static addNewTask(tasksContainer, data){
     
     if(Storage.checkForPreExistingTask(
-    data.project, data.name) !== true){
+    data.list, data.name) !== true){
       
       if(data.name !== ''){
         
@@ -167,59 +167,59 @@ export default class UserInterface{
     
   }
   
-  static createProjectTab(projectName){
-    const projectsMenu =
-    document.getElementById('projects-menu')
+  static createListTab(listName){
+    const listsMenu =
+    document.getElementById('lists-menu')
     
     const div = document.createElement('span');
-          div.setAttribute('id', 'project-tab')
+          div.setAttribute('id', 'list-tab')
           
-    if(projectName == 'None'){
+    if(listName == 'None'){
       
       div.innerHTML = `← Back to Mainpage`;
-      UserInterface.openProjectTab(div, 'All')
+      UserInterface.openListTab(div, 'All')
       
     } else {
       div.innerHTML = 
-      `${projectName}
-      <span class='project-task-count'>
+      `${listName}
+      <span class='list-task-count'>
       </span> 
-      <button class='delete-project' style='display:none'>
+      <button class='delete-list' style='display:none'>
       Delete
       </button>
       `
       
-      div.setAttribute('data-name', projectName)
+      div.setAttribute('data-name', listName)
       
         if(
-          (projectName == 'Today')||
-          (projectName =='This Week')|| 
-          (projectName =='Overdue')
+          (listName == 'Today')||
+          (listName =='This Week')|| 
+          (listName =='Overdue')
           ){
             
             div
-            .querySelector('.project-task-count')
-            .textContent = Storage.getTasksDue(projectName).length
+            .querySelector('.list-task-count')
+            .textContent = Storage.getTasksDue(listName).length
             
          } else {
             
             div
-            .querySelector('.project-task-count')
-            .textContent = Storage.getProject(projectName).getTasks().length
+            .querySelector('.list-task-count')
+            .textContent = Storage.getList(listName).getTasks().length
           }
       
-      UserInterface.openProjectTab(div, projectName)
+      UserInterface.openListTab(div, listName)
     }
     
     return div
   }
   
   static editStatus(){
-    const projectsMenu = document.getElementById('projects-menu')
+    const listsMenu = document.getElementById('lists-menu')
     
     const edit = document.HTMLButtonElement
       
-      if(projectsMenu.getAttribute('data-status') !== 'edit'
+      if(listsMenu.getAttribute('data-status') !== 'edit'
       ){
         return true
       } else{
@@ -228,7 +228,7 @@ export default class UserInterface{
 
   }
   
-  static openProjectTab(tab, tabName){
+  static openListTab(tab, tabName){
     
     const main = document.querySelector('main')
       
@@ -238,9 +238,9 @@ export default class UserInterface{
         
     tab.onclick = () => {
     if(UserInterface.editStatus() !== false){
-            UserInterface.currentProject = tabName,
+            UserInterface.currentList = tabName,
             UserInterface.loadHome(
-              UserInterface.currentProject)
+              UserInterface.currentList)
             main
             .querySelector('#add-task')
             .style.display = 'none'
@@ -253,9 +253,9 @@ export default class UserInterface{
       tab.onclick = () => {
       if(UserInterface.editStatus() !== false){
         
-        UserInterface.currentProject = tabName,
+        UserInterface.currentList = tabName,
         UserInterface.loadHome(
-          UserInterface.currentProject)
+          UserInterface.currentList)
           
         main
         .querySelector('#add-task')
@@ -268,36 +268,36 @@ export default class UserInterface{
 }
   
   static updateTaskCount(){
-    const normalProjects = document.querySelector('#normal-section')
+    const normalLists = document.querySelector('#normal-section')
     
-    const timeBasedProjects = document.querySelector('#time-based-section')
+    const timeBasedLists = document.querySelector('#time-based-section')
     
-    normalProjects
+    normalLists
     .childNodes
-      .forEach(project => {
+      .forEach(list => {
         
-        if(project.hasAttribute('data-name') == true){
+        if(list.hasAttribute('data-name') == true){
           
-          if(Storage.checkForPreExistingProject(project.getAttribute('data-name'))
+          if(Storage.checkForPreExistingList(list.getAttribute('data-name'))
           !== false)
           
-          project
-          .querySelector('.project-task-count')
+          list
+          .querySelector('.list-task-count')
           .textContent = Storage
-          .getProject(project.getAttribute('data-name'))
+          .getList(list.getAttribute('data-name'))
           .getTasks().length
           
         }
       })
     
-    timeBasedProjects
+    timeBasedLists
     .childNodes
-      .forEach(project => {
+      .forEach(list => {
         
-          project
-          .querySelector('.project-task-count')
+          list
+          .querySelector('.list-task-count')
           .textContent = Storage
-          .getTasksDue(project.getAttribute('data-name'))
+          .getTasksDue(list.getAttribute('data-name'))
           .length
         
       })
@@ -306,7 +306,7 @@ export default class UserInterface{
   
   static createDOMTask(t){
     const task = 
-      Storage.getTask(t.project, t.name)
+      Storage.getTask(t.list, t.name)
     
     const div = document.createElement('div')
     
@@ -322,7 +322,7 @@ export default class UserInterface{
         <div>
       <span id='task-details'>${task.details}</span>
       <span id='task-urgency'>${task.urgency}</span>
-      <span id='task-project'>${task.project}</span>
+      <span id='task-list'>${task.list}</span>
       
           <div id='task-buttons'>
             <button id='task-delete-button'>
@@ -361,7 +361,7 @@ export default class UserInterface{
   static deleteTask(task, taskDiv){
     const tasksContainer = document.querySelector('#tasks-container')
   
-    Storage.deleteTask(task.project, task.name )
+    Storage.deleteTask(task.list, task.name )
     tasksContainer.removeChild(taskDiv)
   }
   
@@ -412,27 +412,27 @@ export default class UserInterface{
     taskDiv
     .children[1]
     .children[2]
-    .textContent = newTask.project
+    .textContent = newTask.list
   }
   
-  static addProject(normalProjects, projectName){
+  static addList(normalLists, listName){
     
-    const projectsMenu = document.getElementById('projects-menu')
+    const listsMenu = document.getElementById('lists-menu')
       
-    if(Storage.checkForPreExistingProject(projectName) !== true){
+    if(Storage.checkForPreExistingList(listName) !== true){
         
-        if(projectName != ''){
+        if(listName != ''){
 
-        Storage.addProject(projectName),
+        Storage.addList(listName),
           
-          normalProjects
-          .appendChild(UserInterface.createProjectTab(projectName))
+          normalLists
+          .appendChild(UserInterface.createListTab(listName))
           
-        UserInterface.closeNewProjectPopup()
+        UserInterface.closeNewListPopup()
       
-        } else { alert('Try giving your project a name') }
+        } else { alert('Try giving your list a name') }
       
-    } else alert('I think you already have this project')
+    } else alert('I think you already have this list')
   }
   
   static getFormInput(ext){
@@ -443,29 +443,29 @@ export default class UserInterface{
       details: form[1].value,
       duedate: form[2].value,
       urgency: form[3].value,
-      project: form[4].value
+      list: form[4].value
     }
     
     return data 
     
   }
   
-  static getProjectFormInput(){
-    const projectForm = document.querySelector('#project-form')
+  static getListFormInput(){
+    const listForm = document.querySelector('#list-form')
   
-    return projectForm[0].value
+    return listForm[0].value
   }
   
-  static createTask(currentProject, content){
+  static createTask(currentList, content){
     
     const tasksContainer = document.querySelector('#tasks-container')
     
-    if(currentProject == 'All'){
+    if(currentList == 'All'){
       
       UserInterface.addNewTask(
         tasksContainer, content)
          
-    } else if(currentProject == content.project && content.project != 'None'){
+    } else if(currentList == content.list && content.list != 'None'){
       
         UserInterface.addNewTask(
           tasksContainer, content)
@@ -497,80 +497,80 @@ export default class UserInterface{
     
   }
   
-  static initAddProjectButton(){
-    const projectsMenu = document.getElementById('projects-menu');
+  static initAddListButton(){
+    const listsMenu = document.getElementById('lists-menu');
     
-    const addProjectButton = document.createElement('button');
+    const addListButton = document.createElement('button');
     
-          addProjectButton.setAttribute('id', 'add-project');
-          addProjectButton.textContent = '+';
-          addProjectButton.style.display = 'block'
+          addListButton.setAttribute('id', 'add-list');
+          addListButton.textContent = '+';
+          addListButton.style.display = 'block'
         
-        UserInterface.createProjectForm()
+        UserInterface.createListForm()
           
-      addProjectButton
+      addListButton
       .onclick = () => {
         
-        projectsMenu
-        .querySelector('#add-project')
+        listsMenu
+        .querySelector('#add-list')
         .style.display = 'none'
         
-        projectsMenu
-        .querySelector('#edit-projects')
+        listsMenu
+        .querySelector('#edit-lists')
         .style.display = 'none'
         
-        projectsMenu
+        listsMenu
         .setAttribute('data-status', 'edit')
         
-        UserInterface.openNewProjectPopup()
+        UserInterface.openNewListPopup()
         
       }
       
     document
-    .getElementById('projects-menu')
-    .appendChild(addProjectButton)
+    .getElementById('lists-menu')
+    .appendChild(addListButton)
   }
   
-  static initEditProjectsButton(){
-    const projectsMenu = document.getElementById('projects-menu')
+  static initEditListsButton(){
+    const listsMenu = document.getElementById('lists-menu')
     
     const editButton = document.createElement('button')
     
-          editButton.setAttribute('id', 'edit-projects')
+          editButton.setAttribute('id', 'edit-lists')
           editButton.textContent = 'Edit'
     
       editButton.onclick = () => {
         
-        const project = document.querySelectorAll('#normal-section #project-tab')
+        const list = document.querySelectorAll('#normal-section #list-tab')
         
-        UserInterface.editProjectsMenu()
+        UserInterface.editListsMenu()
         
-        projectsMenu
-        .querySelector('#add-project')
+        listsMenu
+        .querySelector('#add-list')
         .style.display = 'none'
         
-        projectsMenu
-        .querySelector('#edit-projects')
+        listsMenu
+        .querySelector('#edit-lists')
         .style.display = 'none'
         
-        projectsMenu
+        listsMenu
         .setAttribute('data-status', 'edit')
         
-        projectsMenu
+        listsMenu
         .querySelector('#cancel-button')
         .style.display = 'block'
         
-        project
-        .forEach(project => {
-           if(project.hasAttribute('data-name') === true){
+        list
+        .forEach(list => {
+           if(list.hasAttribute('data-name') === true){
            
-           project
-          .querySelector('.project-task-count')
+           list
+          .querySelector('.list-task-count')
           .style.display = 'none'
           
-          if(project.getAttribute('data-name') !== UserInterface.currentProject ){
-           project
-          .querySelector('.delete-project')
+          if(list.getAttribute('data-name') !== UserInterface.currentList ){
+           list
+          .querySelector('.delete-list')
           .style.display = 'block'
            }
            }
@@ -578,13 +578,13 @@ export default class UserInterface{
       }
     
     document
-    .getElementById('projects-menu')
+    .getElementById('lists-menu')
     .appendChild(editButton)
     
   }
   
-  static initCancelEditProjectsButton(){
-    const projectsMenu = document.getElementById('projects-menu')
+  static initCancelEditListsButton(){
+    const listsMenu = document.getElementById('lists-menu')
     
     
     const cancelButton = document.createElement('button');
@@ -596,35 +596,35 @@ export default class UserInterface{
       cancelButton
       .onclick = () => {
         
-      const project = document.querySelectorAll('#projects-menu #project-tab')
+      const list = document.querySelectorAll('#lists-menu #list-tab')
     
-       UserInterface.cancelEditProjectsMenu()
+       UserInterface.cancelEditListsMenu()
        
-       projectsMenu
-       .querySelector('#edit-projects')
+       listsMenu
+       .querySelector('#edit-lists')
        .style.display = 'block'
        
-       projectsMenu
+       listsMenu
       .setAttribute('data-status', 'display')
        
-       projectsMenu
-       .querySelector('#add-project')
+       listsMenu
+       .querySelector('#add-list')
        .style.display = 'block'
        
-       projectsMenu
+       listsMenu
        .querySelector('#cancel-button')
        .style.display = 'none'
        
-       project
-        .forEach(project => {
-           if(project.hasAttribute('data-name') === true){
+       list
+        .forEach(list => {
+           if(list.hasAttribute('data-name') === true){
            
-           project
-          .querySelector('.project-task-count')
+           list
+          .querySelector('.list-task-count')
           .style.display = 'block'
           
-           project
-          .querySelector('.delete-project')
+           list
+          .querySelector('.delete-list')
           .style.display = 'none'
            }
         })
@@ -632,12 +632,12 @@ export default class UserInterface{
       }
     
     document
-    .getElementById('projects-menu')
+    .getElementById('lists-menu')
     .appendChild(cancelButton)
   }
   
   static initSaveChangesButton(){
-    const projectsMenu = document.getElementById('projects-menu');
+    const listsMenu = document.getElementById('lists-menu');
     
     
     const saveChangesButton = document.createElement('button')
@@ -649,39 +649,39 @@ export default class UserInterface{
       saveChangesButton
       .onclick = () => {
         
-        const project = document.querySelectorAll('#projects-menu #project-tab')
+        const list = document.querySelectorAll('#lists-menu #list-tab')
     
-        UserInterface.cancelEditProjectsMenu()
+        UserInterface.cancelEditListsMenu()
       
-        projectsMenu
-        .querySelector('#add-project')
+        listsMenu
+        .querySelector('#add-list')
         .style.display = 'block'
         
-        projectsMenu
-        .querySelector('#edit-projects')
+        listsMenu
+        .querySelector('#edit-lists')
         .style.display = 'block'
         
-        projectsMenu
+        listsMenu
         .setAttribute('data-status', 'display')
         
-        projectsMenu
+        listsMenu
         .querySelector('#save-changes')
         .style.display = 'none'
         
-        projectsMenu
+        listsMenu
         .querySelector('#cancel-button')
         .style.display = 'none'
         
-        project
-        .forEach(project => {
-           if(project.hasAttribute('data-name') === true){
+        list
+        .forEach(list => {
+           if(list.hasAttribute('data-name') === true){
            
-           project
-          .querySelector('.project-task-count')
+           list
+          .querySelector('.list-task-count')
           .style.display = 'block'
           
-           project
-          .querySelector('.delete-project')
+           list
+          .querySelector('.delete-list')
           .style.display = 'none'
            }
         })
@@ -689,28 +689,28 @@ export default class UserInterface{
       }
       
     document
-    .getElementById('projects-menu')
+    .getElementById('lists-menu')
     .appendChild(saveChangesButton)
   }
   
-  static createProjectForm(){
+  static createListForm(){
     
-    const projectsMenu = document.getElementById('projects-menu')
+    const listsMenu = document.getElementById('lists-menu')
     
-    const newProjectForm = document.createElement('form')
+    const newListForm = document.createElement('form')
     
-          newProjectForm.setAttribute('id', 'project-form')
+          newListForm.setAttribute('id', 'list-form')
           
-      newProjectForm.innerHTML = ( `
-      <h2 id='form-header'> New Project </h2>
+      newListForm.innerHTML = ( `
+      <h2 id='form-header'> New List </h2>
       
       <div>
         <label>Name</label>
-        <input type="text" name="project-name" required="true"/>
+        <input type="text" name="list-name" required="true"/>
       </div>
         
       <button type="button" id="create-button">
-      Add Project
+      Add List
       </button>
       
       <button type="button" id="cancel-button">
@@ -719,47 +719,47 @@ export default class UserInterface{
       
       `)
       
-      newProjectForm
+      newListForm
       .querySelector('#create-button')
       .onclick = () => {
-        const normalProjects = document.querySelector('#normal-section')
+        const normalLists = document.querySelector('#normal-section')
         
-        UserInterface.addProject(
-          normalProjects,
-          UserInterface.getProjectFormInput())
+        UserInterface.addList(
+          normalLists,
+          UserInterface.getListFormInput())
         
-        projectsMenu
-        .querySelector('#add-project')
+        listsMenu
+        .querySelector('#add-list')
         .style.display = 'block'
         
-        projectsMenu
-        .querySelector('#edit-projects')
+        listsMenu
+        .querySelector('#edit-lists')
         .style.display = 'block'
         
-        projectsMenu
+        listsMenu
         .setAttribute('data-status', 'display')
     }
     
-      newProjectForm
+      newListForm
       .querySelector('#cancel-button')
       .onclick = () => {
-        UserInterface.closeNewProjectPopup()
+        UserInterface.closeNewListPopup()
         
-        projectsMenu
-        .querySelector('#add-project')
+        listsMenu
+        .querySelector('#add-list')
         .style.display = 'block'
         
-        projectsMenu
-        .querySelector('#edit-projects')
+        listsMenu
+        .querySelector('#edit-lists')
         .style.display = 'block'
         
-        projectsMenu
+        listsMenu
         .setAttribute('data-status', 'display')
     }
     
     document
-    .getElementById('project-form-popup')
-    .appendChild(newProjectForm)
+    .getElementById('list-form-popup')
+    .appendChild(newListForm)
 }
 
   static createTaskForm(){
@@ -806,8 +806,8 @@ export default class UserInterface{
     </div>
     
     <div>
-      <label>Project</label>
-      <select id="project-selection" name="task-project">
+      <label>List</label>
+      <select id="list-selection" name="task-list">
   
       </select>
     </div>
@@ -823,14 +823,14 @@ export default class UserInterface{
     ` )
     
     Storage
-    .getProjects()
-    .forEach((project) => {
+    .getLists()
+    .forEach((list) => {
       const option = document.createElement('option')
       
-            option.textContent = project.name;
+            option.textContent = list.name;
             
       newTaskForm
-      .querySelector('#project-selection')
+      .querySelector('#list-selection')
       .appendChild(option)
       
     })
@@ -850,7 +850,7 @@ export default class UserInterface{
     .onclick = () => {
 
       UserInterface.createTask(
-        UserInterface.currentProject,
+        UserInterface.currentList,
         UserInterface.getFormInput('form'))
         
       main
@@ -872,7 +872,7 @@ export default class UserInterface{
       details: taskDiv.children[1].children[0].textContent,
       duedate: taskDiv.children[0].children[1].textContent,
       urgency: taskDiv.children[1].children[1].textContent,
-      project: taskDiv.children[1].children[2].textContent,
+      list: taskDiv.children[1].children[2].textContent,
     }
     
     
@@ -915,8 +915,8 @@ export default class UserInterface{
     </div>
     
     <div>
-    <label>Project</label>
-    <select class='task-popup-project'>
+    <label>List</label>
+    <select class='task-popup-list'>
     
       </select>
     </div>
@@ -938,14 +938,14 @@ export default class UserInterface{
     }
     
     Storage
-    .getProjects()
-    .forEach((project) => {
+    .getLists()
+    .forEach((list) => {
       const option = document.createElement('option')
       
-            option.textContent = project.name
+            option.textContent = list.name
             
       popupContainer
-      .querySelector('.task-popup-project')
+      .querySelector('.task-popup-list')
       .appendChild(option)
       
     })
@@ -954,7 +954,7 @@ export default class UserInterface{
       .querySelector('.task-popup-urgency').value = task.urgency;
     
     popupContainer
-      .querySelector('.task-popup-project').value = task.project;
+      .querySelector('.task-popup-list').value = task.list;
     
     popupContainer
       .querySelector('.popup-cancel-button')
@@ -962,48 +962,48 @@ export default class UserInterface{
       UserInterface.closeEditTaskPopup(taskDiv)}
   }
   
-  static editProjectsMenu(){
+  static editListsMenu(){
     
-    const normalProjects = document.getElementById('normal-section');
+    const normalLists = document.getElementById('normal-section');
     
-    const projectsMenu = document.getElementById('projects-menu');
+    const listsMenu = document.getElementById('lists-menu');
     
-    normalProjects
+    normalLists
     .childNodes
-    .forEach(project => {
-      if(project.hasAttribute('data-name')){
+    .forEach(list => {
+      if(list.hasAttribute('data-name')){
         
-        project
-        .querySelector('.delete-project')
+        list
+        .querySelector('.delete-list')
         .onclick = () => {
-          Storage.deleteProject(project.getAttribute('data-name'))
+          Storage.deleteList(list.getAttribute('data-name'))
         
           
-       if(Storage.getProjects().length < 2){
-          projectsMenu
+       if(Storage.getLists().length < 2){
+          listsMenu
           
-          .querySelector('#add-project')
+          .querySelector('#add-list')
           .style.display = 'block';
           
-          projectsMenu
+          listsMenu
           .querySelector('#cancel-button')
           .style.display = 'none';
           
-          projectsMenu
+          listsMenu
           .querySelector('#save-changes')
           .style.display = 'none';
           
         } else {
-          projectsMenu
+          listsMenu
           .querySelector('#save-changes')
           .style.display = 'block'
         }
         
-        normalProjects
-          .removeChild(project)
+        normalLists
+          .removeChild(list)
           
           
-          UserInterface.loadTimeBasedProjects()
+          UserInterface.loadTimeBasedLists()
           UserInterface.updateTaskCount()
           
         }
@@ -1011,19 +1011,19 @@ export default class UserInterface{
       } })
   }
   
-  static cancelEditProjectsMenu(){
+  static cancelEditListsMenu(){
     
-    const normalProjects = document.getElementById('normal-section')
+    const normalLists = document.getElementById('normal-section')
     
-    normalProjects
+    normalLists
     .childNodes
-    .forEach(project => {
-      if(project.hasAttribute('data-name')){
+    .forEach(list => {
+      if(list.hasAttribute('data-name')){
         
-        project
-        .querySelector('.project-task-count')
-        .textContent = Storage.getProject(
-          project.getAttribute('data-name'))
+        list
+        .querySelector('.list-task-count')
+        .textContent = Storage.getList(
+          list.getAttribute('data-name'))
           .getTasks().length
         
       }
@@ -1031,21 +1031,21 @@ export default class UserInterface{
     })
   }
   
-  static openNewProjectPopup(){
-    const popup = document.getElementById('project-form-popup')
+  static openNewListPopup(){
+    const popup = document.getElementById('list-form-popup')
     
     popup.style.display = 'block'
   }
   
-  static closeNewProjectPopup(){
+  static closeNewListPopup(){
     
     
     UserInterface.updateTaskCount()
-    const popup = document.querySelector('#project-form-popup')
+    const popup = document.querySelector('#list-form-popup')
     
-    const projectNameInput = document.querySelector('#project-form input')
+    const listNameInput = document.querySelector('#list-form input')
     
-    projectNameInput.value = ''
+    listNameInput.value = ''
     popup.style.display = 'none'
 
 

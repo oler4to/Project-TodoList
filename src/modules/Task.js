@@ -1,13 +1,13 @@
 import {formatDate} from 'date-fns'
 
 export default class Task{
-  constructor(name, details, duedate, urgency, project)
+  constructor(name, details, duedate, urgency, list)
     {
     this.name = name,
     this.details = details || 'No Details',
     this.duedate = duedate || 'No Date',
     this.urgency = urgency,
-    this.project = project
+    this.list = list
   }
   
   setFields(tName, tDetails, tDuedate, tUrgency){
