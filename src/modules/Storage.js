@@ -135,6 +135,12 @@ export default class Storage {
     return project
   }
   
+  static getProjects(){
+    const todo = Storage.getTodo()
+    
+    return todo.getProjects()
+  }
+  
   static getTask(projectName,taskName){
     const todo = Storage.getTodo();
     
