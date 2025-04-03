@@ -74,14 +74,14 @@ export default class UserInterface{
   }
   
   static loadTimeBasedLists(){
-    const timeBasedLists = document.querySelector('#time-based-section');
+    const duedateBasedLists = document.querySelector('#duedate-based-section');
     
-          timeBasedLists.innerHTML = ''
+          duedateBasedLists.innerHTML = ''
     
     let listNames = ['Today', 'This Week', 'Overdue']
     
     for(let list of listNames){
-      timeBasedLists.appendChild(
+      duedateBasedLists.appendChild(
         UserInterface.createListTab(
           list))
     }
@@ -270,7 +270,7 @@ export default class UserInterface{
   static updateTaskCount(){
     const normalLists = document.querySelector('#normal-section')
     
-    const timeBasedLists = document.querySelector('#time-based-section')
+    const duedateBasedLists = document.querySelector('#duedate-based-section')
     
     normalLists
     .childNodes
@@ -290,7 +290,7 @@ export default class UserInterface{
         }
       })
     
-    timeBasedLists
+    duedateBasedLists
     .childNodes
       .forEach(list => {
         
