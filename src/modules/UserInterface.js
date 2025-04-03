@@ -514,6 +514,22 @@ export default class UserInterface{
     .appendChild(cancelButton)
   }
   
+  static initSaveChangesButton(){
+    const saveChangesButton = document.createElement('button')
+          
+          saveChangesButton.setAttribute('id', 'save-changes')
+          saveChangesButton.style.display = 'none'
+          
+      saveChangesButton
+      .onclick = () => {
+        UserInterface.cancelEditProjectsMenu()
+      }
+      
+    document
+    .querySelector('#projects-menu')
+    .appendChild(saveChangesButton)
+  }
+  
   static createProjectForm(){
     const newProjectForm = document.createElement('form')
     
@@ -790,17 +806,19 @@ export default class UserInterface{
     .childNodes
     .forEach(project => {
       if(project.hasAttribute('data-name')){
-        
-        project.innerHTML = 
-        `${project.getAttribute('data-name')}
-        <span class='project-task-count'>
-        </span>`
-        
         project
         .querySelector('.project-task-count')
         .textContent = Storage.getProject(
           project.getAttribute('data-name'))
           .getTasks().length
+          
+        project
+        .querySelector('.project-task-count')
+        .style.display = 'block'
+        
+        project
+        .querySelector('#save-changes')
+        .style.display = 'none'
       }
       
     })
