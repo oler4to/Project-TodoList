@@ -171,25 +171,23 @@ export default class UserInterface{
     const projectsMenu =
     document.getElementById('projects-menu')
     
-    console.log(projectsMenu)
-    
     const div = document.createElement('span');
           div.setAttribute('id', 'project-tab')
           
     if(projectName == 'None'){
       
       div.innerHTML = `← Back to Mainpage`;
-      div.onclick = () =>{
-        if(projectsMenu.childNodes[8].style.display !== 'none'){
-        UserInterface.currentProject = 'All',
-        UserInterface.loadHome('All')
-      }}
-    
+      UserInterface.openProjectTab(div, 'All')
+      
     } else {
       div.innerHTML = 
       `${projectName}
       <span class='project-task-count'>
-      </span> `
+      </span> 
+      <button class='delete-project' style='display:none'>
+      Delete
+      </button>
+      `
       
       div.setAttribute('data-name', projectName)
       
@@ -210,18 +208,64 @@ export default class UserInterface{
             .textContent = Storage.getProject(projectName).getTasks().length
           }
       
-      div.onclick = () => {
-      if(projectsMenu.childNodes[8].style.display !== 'none'){
-        UserInterface.currentProject = projectName,
-        UserInterface.loadHome(
-          UserInterface.currentProject)
-      }
-      }
-      
+      UserInterface.openProjectTab(div, projectName)
     }
     
     return div
   }
+  
+  static editStatus(){
+    const projectsMenu = document.getElementById('projects-menu')
+    
+    const edit = document.HTMLButtonElement
+      
+      if(projectsMenu.getAttribute('data-status') !== 'edit'
+      ){
+        return true
+      } else{
+        return false
+      }
+
+  }
+  
+  static openProjectTab(tab, tabName){
+    
+    const main = document.querySelector('main')
+      
+    const timeTabs = ['Today', 'This Week', 'Overdue']
+      
+    if (timeTabs.includes(tabName) == true){
+        
+    tab.onclick = () => {
+    if(UserInterface.editStatus() !== false){
+            UserInterface.currentProject = tabName,
+            UserInterface.loadHome(
+              UserInterface.currentProject)
+            main
+            .querySelector('#add-task')
+            .style.display = 'none'
+       }
+      
+    }
+      
+    } else {
+      
+      tab.onclick = () => {
+      if(UserInterface.editStatus() !== false){
+        
+        UserInterface.currentProject = tabName,
+        UserInterface.loadHome(
+          UserInterface.currentProject)
+          
+        main
+        .querySelector('#add-task')
+        .style.display = 'block'
+      }
+      
+    }
+  } 
+    
+}
   
   static updateTaskCount(){
     const normalProjects = document.querySelector('#normal-section')
@@ -385,14 +429,6 @@ export default class UserInterface{
           .appendChild(UserInterface.createProjectTab(projectName))
           
         UserInterface.closeNewProjectPopup()
-        
-        projectsMenu
-        .querySelector('#add-project')
-        .style.display = 'block'
-        
-        projectsMenu
-        .querySelector('#edit-projects')
-        .style.display = 'block'
       
         } else { alert('Try giving your project a name') }
       
@@ -440,10 +476,11 @@ export default class UserInterface{
   }
   
   static initAddTaskButton(){
-    const addTaskButton = document.createElement('button');
+    const addTaskButton = document.getElementById('add-task');
     
           addTaskButton.setAttribute('id', 'add-task');
           addTaskButton.innerHTML = '+';
+          addTaskButton.style.display = 'block'
         
           
       addTaskButton.onclick = () => {
@@ -451,9 +488,7 @@ export default class UserInterface{
       
       }
           
-    document
-    .querySelector('main')
-    .appendChild(addTaskButton)
+    
   }
   
   static initAddProjectButton(){
@@ -478,6 +513,9 @@ export default class UserInterface{
         .querySelector('#edit-projects')
         .style.display = 'none'
         
+        projectsMenu
+        .setAttribute('data-status', 'edit')
+        
         UserInterface.openNewProjectPopup()
         
       }
@@ -490,16 +528,16 @@ export default class UserInterface{
   static initEditProjectsButton(){
     const projectsMenu = document.getElementById('projects-menu')
     
-    const project = document.querySelector('#normal-section #project-tab')
-    
     const editButton = document.createElement('button')
     
           editButton.setAttribute('id', 'edit-projects')
           editButton.textContent = 'Edit'
     
       editButton.onclick = () => {
-        UserInterface.editProjectsMenu()
         
+        const project = document.querySelectorAll('#normal-section #project-tab')
+        
+        UserInterface.editProjectsMenu()
         
         projectsMenu
         .querySelector('#add-project')
@@ -509,20 +547,28 @@ export default class UserInterface{
         .querySelector('#edit-projects')
         .style.display = 'none'
         
+        projectsMenu
+        .setAttribute('data-status', 'edit')
         
         projectsMenu
         .querySelector('#cancel-button')
         .style.display = 'block'
         
-        if(project.hasAttribute('data-name')){
         project
-        .querySelector('#delete-project')
-        .style.display = 'block'
-        
-        project
-        .querySelector('.project-task-count')
-        .style.display = 'none'
-        }
+        .forEach(project => {
+           if(project.hasAttribute('data-name') === true){
+           
+           project
+          .querySelector('.project-task-count')
+          .style.display = 'none'
+          
+          if(project.getAttribute('data-name') !== UserInterface.currentProject ){
+           project
+          .querySelector('.delete-project')
+          .style.display = 'block'
+           }
+           }
+        })
       }
     
     document
@@ -534,7 +580,6 @@ export default class UserInterface{
   static initCancelEditProjectsButton(){
     const projectsMenu = document.getElementById('projects-menu')
     
-    const project = document.querySelector('#projects-menu #project-tab')
     
     const cancelButton = document.createElement('button');
           
@@ -544,11 +589,17 @@ export default class UserInterface{
           
       cancelButton
       .onclick = () => {
+        
+      const project = document.querySelectorAll('#projects-menu #project-tab')
+    
        UserInterface.cancelEditProjectsMenu()
        
        projectsMenu
        .querySelector('#edit-projects')
        .style.display = 'block'
+       
+       projectsMenu
+      .setAttribute('data-status', 'display')
        
        projectsMenu
        .querySelector('#add-project')
@@ -559,9 +610,18 @@ export default class UserInterface{
        .style.display = 'none'
        
        project
-      .querySelector('.project-task-count')
-      .style.display = 'none'
-       
+        .forEach(project => {
+           if(project.hasAttribute('data-name') === true){
+           
+           project
+          .querySelector('.project-task-count')
+          .style.display = 'block'
+          
+           project
+          .querySelector('.delete-project')
+          .style.display = 'none'
+           }
+        })
        
       }
     
@@ -573,7 +633,6 @@ export default class UserInterface{
   static initSaveChangesButton(){
     const projectsMenu = document.getElementById('projects-menu');
     
-    const project = document.querySelector('#projects-menu #project-tab')
     
     const saveChangesButton = document.createElement('button')
           
@@ -583,6 +642,9 @@ export default class UserInterface{
           
       saveChangesButton
       .onclick = () => {
+        
+        const project = document.querySelectorAll('#projects-menu #project-tab')
+    
         UserInterface.cancelEditProjectsMenu()
       
         projectsMenu
@@ -594,6 +656,9 @@ export default class UserInterface{
         .style.display = 'block'
         
         projectsMenu
+        .setAttribute('data-status', 'display')
+        
+        projectsMenu
         .querySelector('#save-changes')
         .style.display = 'none'
         
@@ -602,12 +667,18 @@ export default class UserInterface{
         .style.display = 'none'
         
         project
-        .querySelector('#delete-project')
-        .style.display = 'none'
-        
-        project
-        .querySelector('.project-task-count')
-        .style.display = 'none'
+        .forEach(project => {
+           if(project.hasAttribute('data-name') === true){
+           
+           project
+          .querySelector('.project-task-count')
+          .style.display = 'block'
+          
+           project
+          .querySelector('.delete-project')
+          .style.display = 'none'
+           }
+        })
         
       }
       
@@ -650,7 +721,17 @@ export default class UserInterface{
         UserInterface.addProject(
           normalProjects,
           UserInterface.getProjectFormInput())
-      
+        
+        projectsMenu
+        .querySelector('#add-project')
+        .style.display = 'block'
+        
+        projectsMenu
+        .querySelector('#edit-projects')
+        .style.display = 'block'
+        
+        projectsMenu
+        .setAttribute('data-status', 'display')
     }
     
       newProjectForm
@@ -665,6 +746,9 @@ export default class UserInterface{
         projectsMenu
         .querySelector('#edit-projects')
         .style.display = 'block'
+        
+        projectsMenu
+        .setAttribute('data-status', 'display')
     }
     
     document
@@ -873,15 +957,8 @@ export default class UserInterface{
     .forEach(project => {
       if(project.hasAttribute('data-name')){
         
-        project.innerHTML += 
-        ` <button id='delete-project'>
-          Delete
-          </button>`
-          
-        
-        
         project
-        .querySelector('#delete-project')
+        .querySelector('.delete-project')
         .onclick = () => {
           Storage.deleteProject(project.getAttribute('data-name'))
         
@@ -945,6 +1022,8 @@ export default class UserInterface{
   }
   
   static closeNewProjectPopup(){
+    
+    
     UserInterface.updateTaskCount()
     const popup = document.querySelector('#project-form-popup')
     
@@ -952,11 +1031,8 @@ export default class UserInterface{
     
     projectNameInput.value = ''
     popup.style.display = 'none'
-    
-    document
-    .querySelector('#projects-menu #edit-projects')
-    .style.display = 'block'
-    
+
+
   }
   
   static openCreateTaskPopup(){
