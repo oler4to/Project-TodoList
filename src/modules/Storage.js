@@ -105,6 +105,28 @@ export default class Storage {
 
   }
   
+  static updateTask(oldTask, newTask){
+    const todo = Storage.getTodo()
+    
+    if(todo.getProject(oldTask.project).getName !== newTask.project){
+      
+      Storage.deleteTask(
+        oldTask.project, oldTask.name);
+      Storage.addTask(newTask);
+        
+    } else {
+      
+    todo.getProject(oldTask.project).getTask(oldTask.name).setFields(
+      newTask.name, newTask.details,
+      newTask.duedate, newTask.urgency )
+      
+    Storage.updateStorage(todo)
+      
+    }
+    
+     return Storage.getTask(newTask.project, newTask.name)
+  }
+  
   static getProject(projectName){
     const project = 
     Storage.getTodo()
