@@ -94,11 +94,13 @@ export default class UserInterface{
   
   static loadTasks(tasksContainer, listName){
     
+    let duedateLists = ['Today', 'This Week', 'Overdue']
+    
     if(listName == 'All'){
       
       Storage.getTodo()
       .getLists()
-      .map((list) =>{
+      .map((list) => {
   
         list
         .getTasks()
@@ -110,10 +112,7 @@ export default class UserInterface{
         
       })
       
-    } else if(
-      (listName == 'Today') || 
-      (listName =='This Week') ||
-      (listName =='Overdue')){
+    } else if(duedateLists.includes(listName) == true){
         
       Storage
       .getTasksDue(listName)
@@ -124,13 +123,13 @@ export default class UserInterface{
         
     } else {
       
-    Storage
-    .getTodo()
-      .getList(listName)
-      .getTasks()
-        .forEach((task) =>
-          tasksContainer.appendChild(
-           UserInterface.createDOMTask(task) ))
+      Storage
+      .getTodo()
+        .getList(listName)
+        .getTasks()
+          .forEach((task) =>
+            tasksContainer.appendChild(
+             UserInterface.createDOMTask(task) ))
     }
     
     UserInterface.checkForEmptyDisplay()
