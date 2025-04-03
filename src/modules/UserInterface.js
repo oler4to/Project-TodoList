@@ -145,13 +145,13 @@ export default class UserInterface{
       
       if(data.name !== ''){
         
-      UserInterface.closeCreateTaskPopup()
       
       tasksContainer.insertBefore(
        UserInterface.createDOMTask(
         Storage.addTask(data)), 
         tasksContainer.firstElementChild)
       
+      UserInterface.closeCreateTaskPopup()
       UserInterface.checkForEmptyDisplay()
       
       } else {
@@ -183,6 +183,8 @@ export default class UserInterface{
       <span class='project-task-count'>
       </span> `
       
+      div.setAttribute('data-name', projectName)
+      
         if(
           (projectName == 'Today')||
           (projectName =='This Week')|| 
@@ -194,9 +196,6 @@ export default class UserInterface{
             .textContent = Storage.getTasksDue(projectName).length
             
          } else {
-           
-            div
-            .setAttribute('data-name', projectName)
             
             div
             .querySelector('.project-task-count')
@@ -212,6 +211,43 @@ export default class UserInterface{
     }
     
     return div
+  }
+  
+  static updateTaskCount(){
+    const normalProjects = document.querySelector('#normal-section')
+    
+    const timeBasedProjects = document.querySelector('#time-based-section')
+    
+    normalProjects
+    .childNodes
+      .forEach(project => {
+        
+        if(project.hasAttribute('data-name') == true){
+          
+          if(Storage.checkForPreExistingProject(project.getAttribute('data-name'))
+          !== false)
+          
+          project
+          .querySelector('.project-task-count')
+          .textContent = Storage
+          .getProject(project.getAttribute('data-name'))
+          .getTasks().length
+          
+        }
+      })
+    
+    timeBasedProjects
+    .childNodes
+      .forEach(project => {
+        
+          project
+          .querySelector('.project-task-count')
+          .textContent = Storage
+          .getTasksDue(project.getAttribute('data-name'))
+          .length
+        
+      })
+    
   }
   
   static createDOMTask(t){
@@ -252,7 +288,8 @@ export default class UserInterface{
      
      deleteTaskButton.onclick = () => {
        UserInterface.deleteTask(
-         task, div)
+         task, div),
+        UserInterface.updateTaskCount()
      }
      
      const editTaskButton = div.querySelector('#task-edit-button');
@@ -292,7 +329,7 @@ export default class UserInterface{
         UserInterface.closeEditTaskPopup(
           taskDiv.children[1].children[3])
 
-          console.log(Storage.getTodo())
+        
       }
   }
   
@@ -392,6 +429,7 @@ export default class UserInterface{
           
       addTaskButton.onclick = () => {
         UserInterface.openCreateTaskPopup()
+      
       }
           
     document
@@ -720,11 +758,14 @@ export default class UserInterface{
     .forEach(project => {
       if(project.hasAttribute('data-name')){
         
-        project.innerHTML = 
-        `${project.getAttribute('data-name')}
-        <button id='delete-project'>
-        Delete
-        </button>`
+        project.innerHTML += 
+        ` <button id='delete-project'>
+          Delete
+          </button>`
+          
+        project
+        .querySelector('.project-task-count')
+        .style.display = 'none'
         
         project
         .querySelector('#delete-project')
@@ -735,7 +776,7 @@ export default class UserInterface{
           .removeChild(project)
           
           UserInterface.loadTimeBasedProjects()
-          
+          UserInterface.updateTaskCount()
         }
         
       } })
@@ -772,6 +813,7 @@ export default class UserInterface{
   }
   
   static closeNewProjectPopup(){
+    UserInterface.updateTaskCount()
     const popup = document.querySelector('#project-form-popup')
     
     const projectNameInput = document.querySelector('#project-form input')
@@ -782,6 +824,7 @@ export default class UserInterface{
     document
     .querySelector('#projects-menu #edit-projects')
     .style.display = 'block'
+    
   }
   
   static openCreateTaskPopup(){
@@ -792,6 +835,7 @@ export default class UserInterface{
   }
   
   static closeCreateTaskPopup(){
+    UserInterface.updateTaskCount()
     UserInterface.clearFormInput('form')
     document
       .getElementById('task-form-popup')
@@ -801,6 +845,7 @@ export default class UserInterface{
     document
       .getElementById('task-form-popup')
       .style.display = 'none'
+      
   }
   
   static openEditTaskPopup(){
@@ -811,6 +856,7 @@ export default class UserInterface{
   
   static closeEditTaskPopup(taskDiv){
     UserInterface.clearFormInput('edit-popup')
+    UserInterface.updateTaskCount()
     document
       .getElementById('task-edit-popup')
       .style.display = 'none'
@@ -818,6 +864,7 @@ export default class UserInterface{
       taskDiv
       .querySelector('#task-edit-button')
       .style.display = 'block'
+    
   }
   
 }
