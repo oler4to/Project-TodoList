@@ -2,9 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  watchOptions: {
-   ignored: /node_modules|\/data\//, // Ignore specific paths
-  }, 
+  
   
   mode: 'development',
   entry: "./src/index.js",
@@ -16,6 +14,7 @@ module.exports = {
   devtool: 'inline-source-map',
   plugins: [
     new HtmlWebpackPlugin({
+      inject: false,
       template: "./src/index.html",
     }),
   ],
