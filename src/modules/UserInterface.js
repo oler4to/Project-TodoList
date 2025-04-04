@@ -106,7 +106,7 @@ export default class UserInterface{
     Storage.getTodo()
     .getLists()
     .map((list) => {
-      normalLists.appendChild(UserInterface.createListTab(list.name))
+      normalLists.appendChild(UserInterface.buildListTab(list.name))
     })
   }
   
@@ -119,7 +119,7 @@ export default class UserInterface{
     
     for(let list of listNames){
       duedateBasedLists.appendChild(
-        UserInterface.createListTab(
+        UserInterface.buildListTab(
           list))
     }
   }
@@ -204,7 +204,7 @@ export default class UserInterface{
     
   }
   
-  static createListTab(listName){
+  static buildListTab(listName){
     const listsMenu =
     document.getElementById('lists-menu')
     
@@ -410,7 +410,7 @@ export default class UserInterface{
   }
   
   static editTask(taskDiv, task){
-    UserInterface.createEditTaskPopup(taskDiv, task)
+    UserInterface.buildEditTaskForm(taskDiv, task)
     UserInterface.openEditTaskPopup()
   }
   
@@ -457,7 +457,7 @@ export default class UserInterface{
         Storage.addList(listName),
           
           normalLists
-          .appendChild(UserInterface.createListTab(listName))
+          .appendChild(UserInterface.buildListTab(listName))
           
         UserInterface.closeNewListPopup()
       
@@ -513,10 +513,12 @@ export default class UserInterface{
     }
   }
   
-  static createTask(currentList, content){
+  static addTask(currentList, content){
     const tasksContainer = document.querySelector('#tasks-container')
     
     const data = UserInterface.getFormData('form')
+    
+    if(!data) return
     
      if(!UserInterface.validateData(data, 'new')) return
 
@@ -533,7 +535,7 @@ export default class UserInterface{
           UserInterface.buildTask(
             Storage.getTask(data)), 
           tasksContainer.firstElementChild)
-      }
+      } 
           
       UserInterface.closeCreateTaskPopup()
       UserInterface.checkForEmptyDisplay()
@@ -546,6 +548,8 @@ export default class UserInterface{
     
     const addTaskButton = document.getElementById('add-task');
     
+    if(!addTaskButton) return
+    
           addTaskButton.setAttribute('id', 'add-task');
           addTaskButton.innerHTML = '+';
           addTaskButton.style.display = 'block'
@@ -554,9 +558,9 @@ export default class UserInterface{
       addTaskButton.onclick = () => {
         UserInterface.openCreateTaskPopup()
       
-      main
-      .querySelector('#add-task')
-      .style.display = 'none'
+        main
+        .querySelector('#add-task')
+        .style.display = 'none'
       
       }
           
@@ -572,7 +576,7 @@ export default class UserInterface{
           addListButton.textContent = '+';
           addListButton.style.display = 'block'
         
-        UserInterface.createListForm()
+        UserInterface.buildListForm()
           
       addListButton
       .onclick = () => {
@@ -609,6 +613,8 @@ export default class UserInterface{
         
         const list = document.querySelectorAll('#normal-section #list-tab')
         
+        if(!list) return
+        
         UserInterface.editListsMenu()
         
         listsMenu
@@ -628,7 +634,7 @@ export default class UserInterface{
         
         list
         .forEach(list => {
-           if(list.hasAttribute('data-name') === true){
+           if(list.hasAttribute('data-name')){
            
            list
           .querySelector('.list-task-count')
@@ -663,6 +669,8 @@ export default class UserInterface{
       .onclick = () => {
         
       const list = document.querySelectorAll('#lists-menu #list-tab')
+      
+      if(!list) return
     
        UserInterface.cancelEditListsMenu()
        
@@ -683,7 +691,7 @@ export default class UserInterface{
        
        list
         .forEach(list => {
-           if(list.hasAttribute('data-name') === true){
+           if(list.hasAttribute('data-name')){
            
            list
           .querySelector('.list-task-count')
@@ -716,6 +724,8 @@ export default class UserInterface{
       .onclick = () => {
         
         const list = document.querySelectorAll('#lists-menu #list-tab')
+        
+        if(!list) return
     
         UserInterface.cancelEditListsMenu()
       
@@ -759,9 +769,10 @@ export default class UserInterface{
     .appendChild(saveChangesButton)
   }
   
-  static createListForm(){
+  static buildListForm(){
     
     const listsMenu = document.getElementById('lists-menu')
+    
     
     const newListForm = document.createElement('form')
     
@@ -828,7 +839,7 @@ export default class UserInterface{
     .appendChild(newListForm)
 }
 
-  static createTaskForm(){
+  static buildTaskForm(){
     const main = document.querySelector('main')
     
     const newTaskForm = document.createElement('form')
@@ -915,7 +926,7 @@ export default class UserInterface{
     .querySelector('#create-button')
     .onclick = () => {
 
-      UserInterface.createTask(
+      UserInterface.addTask(
         UserInterface.currentList,
         UserInterface.getFormData('form'))
         
@@ -931,7 +942,7 @@ export default class UserInterface{
     
   }
   
-  static createEditTaskPopup(taskDiv){
+  static buildEditTaskForm(taskDiv){
     
     const oldData = {
       name: taskDiv.querySelector('#task-name').textContent,
@@ -943,6 +954,8 @@ export default class UserInterface{
     }
     
     const popupContainer = document.querySelector('#task-edit-popup');
+    
+    if(!popupContainer) return
     
           popupContainer.style.display = 'none'
     
@@ -1112,7 +1125,7 @@ export default class UserInterface{
   }
   
   static openCreateTaskPopup(){
-   UserInterface.createTaskForm()
+   UserInterface.buildTaskForm()
     document
     .getElementById('task-form-popup')
     .style.display = 'block';
