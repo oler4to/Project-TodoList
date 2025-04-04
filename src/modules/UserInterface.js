@@ -844,8 +844,6 @@ export default class UserInterface{
             .style.display = 'block'
       }
       
-      UserInterface.changeMenuDisplay()
-      
     }} 
     
 }
