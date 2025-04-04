@@ -353,13 +353,14 @@ export default class UserInterface{
   static saveChanges(taskDiv, oldData){
     const data = UserInterface.getFormInput('edit-popup')
     
-    if(this.validateData(data, 'edit')){
+    if(this.validateData(data, 'edit'))
+    
     UserInterface.updateTask(
       taskDiv, 
       Storage.updateTask(oldData, data) )
     UserInterface.closeEditTaskPopup(
-      taskDiv.children[1].children[3])
-    }
+      taskDiv)
+    
   }
   
   static updateTask(taskDiv, updatedData){
