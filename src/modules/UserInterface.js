@@ -107,7 +107,7 @@ export default class UserInterface{
         .getTasks()
         .forEach( task => {
         tasksContainer.appendChild(
-          UserInterface.createDOMTask(task))
+          UserInterface.buildTask(task))
           
         })
         
@@ -119,7 +119,7 @@ export default class UserInterface{
       .getTasksDue(listName)
         .map((task) => {
           tasksContainer.appendChild(
-            UserInterface.createDOMTask(task))
+            UserInterface.buildTask(task))
         })
         
     } else {
@@ -130,7 +130,7 @@ export default class UserInterface{
         .getTasks()
           .forEach((task) =>
             tasksContainer.appendChild(
-             UserInterface.createDOMTask(task) ))
+             UserInterface.buildTask(task) ))
     }
     
     UserInterface.checkForEmptyDisplay()
@@ -285,15 +285,11 @@ export default class UserInterface{
     
   }
   
-  static createDOMTask(t){
-    const task = 
-      Storage.getTask(t.list, t.name)
-    
-    const div = document.createElement('div')
-    
-          div.setAttribute('id', 'task')
+  static buildTask(task){
+    const taskDiv = document.createElement('div')
+          taskDiv.setAttribute('id', 'task')
           
-      div.innerHTML = (
+      taskDiv.innerHTML = (
       ` <div>
       <span id='task-name'>${task.name}</span>
       <span id='task-duedate'>${task.getDate()}</span>
@@ -319,27 +315,27 @@ export default class UserInterface{
         
       ` )
      
-     const deleteTaskButton = div.querySelector('#task-delete-button')
+     const deleteTaskButton = taskDiv.querySelector('#task-delete-button')
      
      deleteTaskButton.onclick = () => {
-       UserInterface.deleteTask(
-         task, div),
-        UserInterface.updateTaskCount()
+      UserInterface.deleteTask(taskDiv, task)
+      UserInterface.updateTaskCount()
+      UserInterface.checkForEmptyDisplay()
      }
      
-     const editTaskButton = div.querySelector('#task-edit-button');
+     const editTaskButton = taskDiv.querySelector('#task-edit-button');
      
      editTaskButton.onclick = () => {
-       UserInterface.editTask(div, task)
+       UserInterface.editTask(taskDiv, task)
        editTaskButton.style.display = 'none'
      }
 
     
-    return div
+    return taskDiv
   
   }
   
-  static deleteTask(task, taskDiv){
+  static deleteTask(taskDiv, task){
     const tasksContainer = document.querySelector('#tasks-container')
   
     Storage.deleteTask(task.list, task.name )
@@ -438,11 +434,12 @@ export default class UserInterface{
   }
   
   static validateData(data){
-    if(Storage.checkForPreExistingTask(
-    data.list, data.name) !== true){
+    if(!Storage.checkForPreExistingTask(
+    data.list, data.name)){
       
       if(data.name !== ''){
         
+        Storage.addTask(data)
         return true
         
       } else {
@@ -464,19 +461,16 @@ export default class UserInterface{
           if(currentList == 'All'){
         
           tasksContainer.insertBefore(
-           UserInterface.createDOMTask(
-              Storage.addTask(data)), 
+           UserInterface.buildTask(
+              Storage.getTask(data)), 
             tasksContainer.firstElementChild)
            
         } else if(currentList == content.list && content.list != 'None'){
           
           tasksContainer.insertBefore(
-            UserInterface.createDOMTask(
-              Storage.addTask(data)), 
+            UserInterface.buildTask(
+              Storage.getTask(data)), 
             tasksContainer.firstElementChild)
-        } else {
-          
-          Storage.addTask(content)
         }
           
       UserInterface.closeCreateTaskPopup()
