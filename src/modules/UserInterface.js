@@ -436,14 +436,17 @@ export default class UserInterface{
     return listForm[0].value
   }
   
-  static validateData(data){
+  static validateData(data, action){
     if(Storage.checkForPreExistingTask(
     data.list, data.name) == false){
       
       if(data.name !== ''){
         
+        if(action === 'new'){
         Storage.addTask(data)
         return true
+       } else return false
+       
         
       } else {
         alert('Maybe try giving your task a name?')
@@ -459,7 +462,7 @@ export default class UserInterface{
     
     const data = UserInterface.getFormInput('form')
     
-     if(!UserInterface.validateData(data)) return
+     if(!UserInterface.validateData(data, 'new')) return
 
         if(currentList == 'All'){
       
