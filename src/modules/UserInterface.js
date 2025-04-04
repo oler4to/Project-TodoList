@@ -33,9 +33,18 @@ export default class UserInterface{
     const listsMenu = document.querySelector('#lists-menu')
     
     openMenu.onclick = () => {
-      
-      listsMenu.style.display = 'flex'
+    
+      if(listsMenu.getAttribute('data-display-status') == 'false'){
+        
+        listsMenu.style.display = 'flex'
+        listsMenu.setAttribute('data-display-status', 'true')
+        
+      } else {
+        listsMenu.style.display = 'none'
+        listsMenu.setAttribute('data-display-status', 'false')
+      }
     }
+    
   }
   
   static loadHome(listName){
@@ -228,7 +237,7 @@ export default class UserInterface{
   static getEditStatus(){
     const listsMenu = document.getElementById('lists-menu')
       
-      if(listsMenu.getAttribute('data-status') === 'edit'
+      if(listsMenu.getAttribute('data-edit-status') === 'edit'
       ){
         return true
       } else{
@@ -562,7 +571,7 @@ export default class UserInterface{
         .style.display = 'none'
         
         listsMenu
-        .setAttribute('data-status', 'edit')
+        .setAttribute('data-edit-status', 'edit')
         
         UserInterface.openNewListPopup()
         
@@ -596,7 +605,7 @@ export default class UserInterface{
         .style.display = 'none'
         
         listsMenu
-        .setAttribute('data-status', 'edit')
+        .setAttribute('data-edit-status', 'edit')
         
         listsMenu
         .querySelector('#cancel-button')
@@ -647,7 +656,7 @@ export default class UserInterface{
        .style.display = 'block'
        
        listsMenu
-      .setAttribute('data-status', 'display')
+      .setAttribute('data-edit-status', 'display')
        
        listsMenu
        .querySelector('#add-list')
@@ -704,7 +713,7 @@ export default class UserInterface{
         .style.display = 'block'
         
         listsMenu
-        .setAttribute('data-status', 'display')
+        .setAttribute('data-edit-status', 'display')
         
         listsMenu
         .querySelector('#save-changes')
@@ -779,7 +788,7 @@ export default class UserInterface{
         .style.display = 'block'
         
         listsMenu
-        .setAttribute('data-status', 'display')
+        .setAttribute('data-edit-status', 'display')
     }
     
       newListForm
@@ -796,7 +805,7 @@ export default class UserInterface{
         .style.display = 'block'
         
         listsMenu
-        .setAttribute('data-status', 'display')
+        .setAttribute('data-edit-status', 'display')
     }
     
     document
