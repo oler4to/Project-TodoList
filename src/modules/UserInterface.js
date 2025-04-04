@@ -184,7 +184,7 @@ export default class UserInterface{
           
       if(listName == 'None'){
         
-        tab.innerHTML = `← Back to Mainpage`;
+        tab.innerHTML = `${String.fromCodePoint(0x2190)} Back to Mainpage`;
         UserInterface.openListTab(tab, 'All')
         
       } else {
@@ -292,6 +292,7 @@ export default class UserInterface{
           
       taskDiv.innerHTML = (
       ` <div>
+      <span id='complete-status'>${String.fromCodePoint(0x2713)}</span>
       <span id='task-name'>${task.name}</span>
       <span id='task-duedate'>${task.getDate()}</span>
       <span id='task-expand'>+</span>
@@ -352,13 +353,15 @@ export default class UserInterface{
   static saveChanges(taskDiv, oldData){
     const data = UserInterface.getFormInput('edit-popup')
     
-    if(this.validateData(data, oldData))
+    if(this.validateData(data, oldData)){
     
     UserInterface.updateTask(
       taskDiv, 
       Storage.getTask(data))
     UserInterface.closeEditTaskPopup(
       taskDiv)
+      
+    }
     
   }
   
@@ -421,8 +424,7 @@ export default class UserInterface{
   }
   
   static validateData(data, data2){
-    if(Storage.checkForPreExistingTask(
-    data.list, data.name) == false){
+    if(!Storage.checkForPreExistingTask(data)){
       
       if(data.name !== ''){
         
@@ -861,7 +863,16 @@ export default class UserInterface{
     
   }
   
-  static createEditTaskPopup(taskDiv, oldData){
+  static createEditTaskPopup(taskDiv){
+    
+    const oldData = {
+      name: taskDiv.querySelector('#task-name').textContent,
+      details: taskDiv.querySelector('#task-details').textContent,
+      duedate: taskDiv.querySelector('#task-duedate').textContent,
+      urgency: taskDiv.querySelector('#task-urgency').textContent,
+      list: taskDiv.querySelector('#task-list').textContent,
+      
+    }
     
     const popupContainer = document.querySelector('#task-edit-popup');
     
@@ -983,6 +994,9 @@ export default class UserInterface{
           
           UserInterface.loadTimeBasedLists()
           UserInterface.updateTaskCount()
+          
+          UserInterface.loadHome(UserInterface.currentList)
+          
           
         }
         
