@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'Poppins-Regular';
+  src: url('./fonts/Poppins-Regular.ttf')
+}
+
+@font-face {
+  font-family: 'Poppins-Black';
+  src: url('./fonts/Poppins-Black.ttf')
+}
+
+@font-face{
+  font-family: 'Refresh-Regular';
+  src: url('./fonts/Refresh-Regular.woff');
+}
+
+@font-face {
+  font-family: 'Baloo-Regular';
+  src: url('./fonts/Baloo-Regular.ttf')
+}
+
+:root {
+  --colourOne: #CBFFDB
+  --colourTwo: #7466F8
+  --colourThree: #CBDCFF
+  --colourFour: #22211D
+}
+
+all {
+  all: none;
+  appearance: none;
+}
