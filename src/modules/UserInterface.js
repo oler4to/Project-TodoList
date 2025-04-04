@@ -60,6 +60,7 @@ export default class UserInterface{
     
     if(!tasksContainer) return
     
+    tasksContainer.innerHTML = ''
     UserInterface.makeSectionHead(listName)
     UserInterface.loadTasks(tasksContainer, listName)
     
@@ -389,6 +390,8 @@ export default class UserInterface{
       Storage.getTask(data))
     UserInterface.closeEditTaskPopup(
       taskDiv)
+      
+    UserInterface.loadHome(UserInterface.currentList)
       
     }
     
