@@ -444,9 +444,9 @@ export default class UserInterface{
         
         if(action === 'new'){
         Storage.addTask(data)
-        return true
-       } else return false
+       } 
        
+        return true
         
       } else {
         alert('Maybe try giving your task a name?')
