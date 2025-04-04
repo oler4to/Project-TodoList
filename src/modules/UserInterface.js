@@ -12,6 +12,8 @@ export default class UserInterface{
     
     Storage.onStartup()
     
+    UserInterface.initOpenMenuButton()
+    
     UserInterface.loadHome('All')
     UserInterface.loadNormalLists()
     UserInterface.loadTimeBasedLists()
@@ -23,6 +25,17 @@ export default class UserInterface{
     UserInterface.initSaveChangesButton()
     
     
+  }
+  
+  static initOpenMenuButton(){
+    const openMenu = document.querySelector('header #open-menu')
+    
+    const listsMenu = document.querySelector('#lists-menu')
+    
+    openMenu.onclick = () => {
+      
+      listsMenu.style.display = 'flex'
+    }
   }
   
   static loadHome(listName){
