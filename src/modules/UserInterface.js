@@ -6,18 +6,20 @@ import Storage from './Storage.js'
 import { formatDate } from 'date-fns'
 
 export default class UserInterface{
+  
+  //START
+  
   static currentList = 'All'
   
   static start(){
     
     Storage.onStartup()
     
-    UserInterface.initOpenMenuButton()
-    
     UserInterface.loadHome('All')
     UserInterface.loadNormalLists()
     UserInterface.loadTimeBasedLists()
     
+    UserInterface.initOpenMenuButton()
     UserInterface.initAddTaskButton()
     UserInterface.initAddListButton()
     UserInterface.initEditListsButton()
@@ -27,33 +29,7 @@ export default class UserInterface{
     
   }
   
-  static changeMenuDisplay() {
-    const listsMenu = document.querySelector('#lists-menu')
-    
-    if(!listsMenu) return
-    
-    if(listsMenu.getAttribute('data-display-status') == 'false'){
-        
-        listsMenu.style.display = 'flex'
-        listsMenu.setAttribute('data-display-status', 'true')
-        
-      } else {
-        listsMenu.style.display = 'none'
-        listsMenu.setAttribute('data-display-status', 'false')
-      }
-  }
-  
-  static initOpenMenuButton(){
-    const openMenu = document.querySelector('header #open-menu')
-    
-    if(!openMenu) return
-    
-    openMenu.onclick = () => {
-        UserInterface.changeMenuDisplay()
-    }
-    
-  }
-  
+  // LOAD, UPDATE AND CHANGE
   static loadHome(listName){
     
     const tasksContainer = document.querySelector('#tasks-container');
@@ -61,15 +37,9 @@ export default class UserInterface{
     if(!tasksContainer) return
     
     tasksContainer.innerHTML = ''
-    UserInterface.makeSectionHead(listName)
+    UserInterface.buildSectionHead(listName)
     UserInterface.loadTasks(tasksContainer, listName)
     
-  }
-  
-  static makeSectionHead(listName){
-    const sectionHeader = document.getElementById('main-header');
-    
-          sectionHeader.textContent = listName;
   }
   
   static loadNormalLists(){
@@ -142,121 +112,23 @@ export default class UserInterface{
     UserInterface.checkForEmptyDisplay()
   
   }
-  
-  static setupNoTasksMessage(){
-    const tasksContainer = document.getElementById('tasks-container')
+  static updateTask(taskDiv, updatedData){
+    const newTask = updatedData
     
-    const noTasksMessage = document.createElement('span')
-    
-          noTasksMessage.setAttribute('class', 'no-tasks-message')
-          noTasksMessage.textContent = "Can't display tasks that don't exist"
-    
-   document
-    .getElementById('tasks-container')
-    .appendChild(noTasksMessage)
-  }
-  
-  static checkForEmptyDisplay(){
-    const tasksContainer = document.querySelector('#tasks-container')
-    
-    if(!tasksContainer) return
-    
-    const taskPresent = document.querySelector('#tasks-container #task')
-    
-    const noTasksMessage = document.querySelector('#tasks-container .no-tasks-message')
-    
-    if(!taskPresent){
+    for(let key in newTask){
+      console.log(taskDiv)
       
-      if(!noTasksMessage){
-          this.setupNoTasksMessage()
-      }
-    
-    } else {
-      if(noTasksMessage){
-        noTasksMessage.remove()
+      taskDiv
+        .querySelector(`#task-${key}`)
+          .textContent = newTask[key]
+      if(key == 'duedate' && newTask[key] !== 'No Date'){
+        taskDiv
+        .querySelector(`#task-${key}`)
+          .textContent = formatDate(newTask.duedate, 'd MMMM yyyy')
       }
     }
-    
   }
-  
-  static buildListTab(listName){
-    const listsMenu =
-    document.getElementById('lists-menu')
-    
-    if(!listsMenu) return
-    
-    const tab = document.createElement('span')
-          tab.setAttribute('id', 'list-tab')
-          
-      if(listName == 'None'){
-        
-        tab.innerHTML = `${String.fromCodePoint(0x2190)} Back to Mainpage`;
-        UserInterface.openListTab(tab, 'All')
-        
-      } else {
-        tab.innerHTML = `${listName} <span class='list-task-count'> </span> 
-        <button class='delete-list' style='display:none'> Delete </button>
-        `
-        
-          if(['Today', 'This Week', 'Overdue'].includes(listName)){
-              
-              tab
-              .querySelector('.list-task-count')
-              .textContent = Storage.getTasksDue(listName).length
-              
-           } else {
-              
-              tab
-              .querySelector('.list-task-count')
-              .textContent = Storage.getList(listName).getTasks().length
-            }
-        
-        tab.setAttribute('data-name', listName)
-        UserInterface.openListTab(tab, listName)
-      }
-    
-    return tab
-  }
-  
-  static getEditStatus(){
-    const listsMenu = document.getElementById('lists-menu')
-      
-      if(listsMenu.getAttribute('data-edit-status') === 'edit'
-      ){
-        return true
-      } else{
-        return false
-      }
 
-  }
-  
-  static openListTab(tab, tabName){
-    const main = document.querySelector('main')
-      
-    const timeTabs = ['Today', 'This Week', 'Overdue']
-        
-    tab.onclick = () => {
-      
-    if(!this.getEditStatus()){
-      UserInterface.currentList = tabName,
-      UserInterface.loadHome(UserInterface.currentList)
-      
-      if(timeTabs.includes(tabName)){
-        main
-          .querySelector('#add-task')
-            .style.display = 'none'
-      } else {
-        main
-          .querySelector('#add-task')
-            .style.display = 'block'
-      }
-      
-      UserInterface.changeMenuDisplay()
-      
-    }} 
-    
-}
-  
   static updateTaskCount(){
     const normalLists = document.querySelector('#normal-section')
     
@@ -293,6 +165,90 @@ export default class UserInterface{
     
   }
   
+  static changeMenuDisplay() {
+    const listsMenu = document.querySelector('#lists-menu')
+    
+    if(!listsMenu) return
+    
+    if(listsMenu.getAttribute('data-display-status') == 'false'){
+        
+        listsMenu.style.display = 'flex'
+        listsMenu.setAttribute('data-display-status', 'true')
+        
+      } else {
+        listsMenu.style.display = 'none'
+        listsMenu.setAttribute('data-display-status', 'false')
+      }
+  }
+  
+  static checkForEmptyDisplay(){
+    const tasksContainer = document.querySelector('#tasks-container')
+    
+    if(!tasksContainer) return
+    
+    const taskPresent = document.querySelector('#tasks-container #task')
+    
+    const noTasksMessage = document.querySelector('#tasks-container .no-tasks-message')
+    
+    if(!taskPresent){
+      
+      if(!noTasksMessage){
+          this.setupNoTasksMessage()
+      }
+    
+    } else {
+      if(noTasksMessage){
+        noTasksMessage.remove()
+      }
+    }
+    
+  }
+  
+  //VALIDATE
+  
+  static validateData(data, data2){
+    if(!Storage.checkForPreExistingTask(data)){
+      
+      if(data.name !== ''){
+        
+        if(data2 === 'new'){
+        Storage.addTask(data)
+       } else {
+         Storage.updateTask(data2, data)
+       }
+       
+        return true
+        
+      } else {
+        alert('Maybe try giving your task a name?')
+      }
+      
+    } else {
+      alert("How about you create a task that doesn't already exist?'") 
+    }
+  }
+  
+  //BUILD 
+  
+  static setupNoTasksMessage(){
+    const tasksContainer = document.getElementById('tasks-container')
+    
+    const noTasksMessage = document.createElement('span')
+    
+          noTasksMessage.setAttribute('class', 'no-tasks-message')
+          noTasksMessage.textContent = "Can't display tasks that don't exist"
+    
+   document
+    .getElementById('tasks-container')
+    .appendChild(noTasksMessage)
+  }
+  
+  static buildSectionHead(listName){
+    const sectionHeader = document.getElementById('main-header');
+    
+          sectionHeader.textContent = listName;
+  }
+ 
   static buildTask(task){
 
     const taskDiv = document.createElement('div')
@@ -372,112 +328,313 @@ export default class UserInterface{
   
   }
   
-  static deleteTask(taskDiv, task){
-    Storage.deleteTask(task)
-    taskDiv.remove()
+  static buildListTab(listName){
+    const listsMenu =
+    document.getElementById('lists-menu')
     
-    this.updateTaskCount()
-    this.checkForEmptyDisplay()
-  }
-  
-  static saveChanges(taskDiv, oldData){
-    const data = UserInterface.getFormData('edit-form')
+    if(!listsMenu) return
     
-    if(this.validateData(data, oldData)){
-    
-    UserInterface.updateTask(
-      taskDiv, 
-      Storage.getTask(data))
-    UserInterface.closeEditTaskPopup(
-      taskDiv)
-      
-    UserInterface.loadHome(UserInterface.currentList)
-      
-    }
-    
-  }
-  
-  static updateTask(taskDiv, updatedData){
-    const newTask = updatedData
-    
-    for(let key in newTask){
-      console.log(taskDiv)
-      
-      taskDiv
-        .querySelector(`#task-${key}`)
-          .textContent = newTask[key]
-      if(key == 'duedate' && newTask[key] !== 'No Date'){
-        taskDiv
-        .querySelector(`#task-${key}`)
-          .textContent = formatDate(newTask.duedate, 'd MMMM yyyy')
-      }
-    }
-  }
-  
-  static addList(normalLists, listName){
-      
-    if(Storage.checkForPreExistingList(listName) !== true){
-        
-        if(listName != ''){
-
-        Storage.addList(listName),
+    const tab = document.createElement('span')
+          tab.setAttribute('id', 'list-tab')
           
-          normalLists
-          .appendChild(UserInterface.buildListTab(listName))
-          
-        UserInterface.closeNewListPopup()
-      
-        } else { alert('Try giving your list a name') }
-      
-    } else alert('I think you already have this list')
-  }
-  
-  static getFormData(extention){
-    const form = document.querySelector(`#task-${extention}`)
-    
-    if(!form) return
-    
-      let data = {
-        name: form[0].value,
-        details: form[1].value,
-        duedate: form[2].value,
-        urgency: form[3].value,
-        list: form[4].value
-      }
-      
-      return data 
-    
-  }
-  
-  static getListFormData(){
-    const listForm = document.querySelector('#list-form')
-    
-    if(!listForm) return
-  
-      return listForm[0].value
-  }
-  
-  static validateData(data, data2){
-    if(!Storage.checkForPreExistingTask(data)){
-      
-      if(data.name !== ''){
+      if(listName == 'None'){
         
-        if(data2 === 'new'){
-        Storage.addTask(data)
-       } else {
-         Storage.updateTask(data2, data)
-       }
-       
-        return true
+        tab.innerHTML = `${String.fromCodePoint(0x2190)} Back to Mainpage`;
+        UserInterface.openListTab(tab, 'All')
         
       } else {
-        alert('Maybe try giving your task a name?')
+        tab.innerHTML = `${listName} <span class='list-task-count'> </span> 
+        <button class='delete-list' style='display:none'> Delete </button>
+        `
+        
+          if(['Today', 'This Week', 'Overdue'].includes(listName)){
+              
+              tab
+              .querySelector('.list-task-count')
+              .textContent = Storage.getTasksDue(listName).length
+              
+           } else {
+              
+              tab
+              .querySelector('.list-task-count')
+              .textContent = Storage.getList(listName).getTasks().length
+            }
+        
+        tab.setAttribute('data-name', listName)
+        UserInterface.openListTab(tab, listName)
       }
-      
-    } else {
-      alert("How about you create a task that doesn't already exist?'") 
-    }
+    
+    return tab
   }
+  
+  static buildTaskForm(){
+    const main = document.querySelector('main')
+    
+    const newTaskForm = document.createElement('form')
+    
+          newTaskForm.setAttribute('id', 'task-form')
+    
+    newTaskForm.innerHTML = ( `
+    <h2 id="form-header">New Task</h2>
+        
+    <div>
+      <label>Name</label>
+      <input type="text" name="task-name" required="true"/>
+    </div>
+    
+    <div>
+      <label>Details</label>
+      <input type="text" name="task-details"/>
+    </div>
+    
+    <div>
+      <label>Duedate</label>
+      <input type="date" name="task-duedate"/>
+    </div>
+    
+    <div>
+    
+      <label>Urgency</label>
+      <select id="urgency-selection"
+      name="task-urgency">
+      
+        <option value='No Urgency' disabled selected> No Urgency (Default)</option>
+        
+        <option> Low </option>
+        
+        <option> Medium </option>
+        
+        <option> High </option>
+        
+      </select>
+      
+    </div>
+    
+    <div>
+      <label>List</label>
+      <select id="list-selection" name="task-list">
+  
+      </select>
+    </div>
+    
+    
+  <button type="button" id="create-button">
+  Add Task
+  </button>
+  
+  <button type="button" id="cancel-button"> Cancel
+  </button>
+  
+    ` )
+    
+    Storage
+    .getLists()
+    .forEach((list) => {
+      const option = document.createElement('option')
+      
+            option.textContent = list.name;
+            
+      newTaskForm
+      .querySelector('#list-selection')
+      .appendChild(option)
+      
+    })
+    
+    newTaskForm
+    .querySelector('#cancel-button')
+    .onclick = () => {
+      UserInterface.closeCreateTaskPopup()
+      
+      main
+      .querySelector('#add-task')
+      .style.display = 'block'
+    }
+    
+    newTaskForm
+    .querySelector('#create-button')
+    .onclick = () => {
+
+      UserInterface.addTask(
+        UserInterface.currentList,
+        UserInterface.getFormData('form'))
+        
+      main
+      .querySelector('#add-task')
+      .style.display = 'block'
+        
+    }
+    
+    document
+    .getElementById('task-form-popup')
+    .appendChild(newTaskForm)
+    
+  }
+  
+  static buildListForm(){
+    
+    const listsMenu = document.getElementById('lists-menu')
+    
+    
+    const newListForm = document.createElement('form')
+    
+          newListForm.setAttribute('id', 'list-form')
+          
+      newListForm.innerHTML = ( `
+      <h2 id='form-header'> New List </h2>
+      
+      <div>
+        <label>Name</label>
+        <input type="text" name="list-name" required="true"/>
+      </div>
+        
+      <button type="button" id="create-button">
+      Add List
+      </button>
+      
+      <button type="button" id="cancel-button">
+      Cancel
+      </button>
+      
+      `)
+      
+      newListForm
+      .querySelector('#create-button')
+      .onclick = () => {
+        const normalLists = document.querySelector('#normal-section')
+        
+        UserInterface.addList(
+          normalLists,
+          UserInterface.getListFormData())
+        
+        listsMenu
+        .querySelector('#add-list')
+        .style.display = 'block'
+        
+        listsMenu
+        .querySelector('#edit-lists')
+        .style.display = 'block'
+        
+        listsMenu
+        .setAttribute('data-edit-status', 'display')
+    }
+    
+      newListForm
+      .querySelector('#cancel-button')
+      .onclick = () => {
+        UserInterface.closeNewListPopup()
+        
+        listsMenu
+        .querySelector('#add-list')
+        .style.display = 'block'
+        
+        listsMenu
+        .querySelector('#edit-lists')
+        .style.display = 'block'
+        
+        listsMenu
+        .setAttribute('data-edit-status', 'display')
+    }
+    
+    document
+    .getElementById('list-form-popup')
+    .appendChild(newListForm)
+}
+  
+  static buildEditTaskForm(taskDiv){
+    
+    const oldData = {
+      name: taskDiv.querySelector('#task-name').textContent,
+      details: taskDiv.querySelector('#task-details').textContent,
+      duedate: taskDiv.querySelector('#task-duedate').textContent,
+      urgency: taskDiv.querySelector('#task-urgency').textContent,
+      list: taskDiv.querySelector('#task-list').textContent,
+      
+    }
+    
+    
+    const editTaskPopup = document.querySelector('#task-edit-popup')
+    
+    const editTaskForm = document.createElement('form');
+    
+          editTaskForm.setAttribute('id', 'task-edit-form')
+    
+    editTaskForm.innerHTML = ( `<h2> Edit Task </h2>
+    
+    <div>
+      <label>Name</label>
+      <input type='text' class='edit-popup-name'/> 
+    </div>
+    
+    <div>
+      <label>Details</label>
+      <input type='text' class='edit-popup-details'/> 
+    </div>
+    
+    <div>
+      <label>Duedate</label>
+      <input type='date' class='edit-popup-duedate'/> 
+    </div>
+    
+    <div>
+      <label>Urgency</label>
+      <select class='edit-popup-urgency'>
+        <option> No Urgency </option>
+        <option> Low </option>
+        <option> Medium </option>
+        <option> High </option>
+      </select> 
+    </div>
+    
+    <div>
+      <label>List</label>
+      <select class='edit-popup-list'>
+        </select>
+    </div>
+    
+    <button type='button' class='edit-popup-save'> Save Changes </button>
+    
+    <button type='button' class='edit-popup-cancel'> Cancel </button> ` )
+    
+    Storage
+    .getLists()
+    .forEach((list) => {
+      const option = document.createElement('option')
+      
+            option.textContent = list.name
+            
+      editTaskForm
+        .querySelector('.edit-popup-list')
+          .appendChild(option)
+      
+    })
+    
+    for(let key in oldData){
+      editTaskForm
+        .querySelector(`.edit-popup-${key}`)
+          .value = oldData[key]
+      if(key == 'duedate' && oldData[key] !== 'No Date'){
+        editTaskForm
+        .querySelector(`.edit-popup-${key}`)
+          .value = formatDate(oldData.duedate, 'yyyy-MM-dd')
+      }
+    }
+    
+    editTaskForm
+      .querySelector('.edit-popup-save')
+        .onclick = () => {
+          UserInterface.saveChanges(taskDiv, oldData)
+        }
+    
+    editTaskForm
+      .querySelector('.edit-popup-cancel')
+        .onclick = () => {
+      UserInterface.closeEditTaskPopup(taskDiv)}
+    
+    editTaskPopup
+    .appendChild(editTaskForm)
+  }
+  
+  //ADD, DELETE, EDIT & SAVE
   
   static addTask(currentList, content){
     const tasksContainer = document.querySelector('#tasks-container')
@@ -507,6 +664,284 @@ export default class UserInterface{
       UserInterface.checkForEmptyDisplay()
           
   
+  }
+ 
+  static addList(normalLists, listName){
+      
+    if(Storage.checkForPreExistingList(listName) !== true){
+        
+        if(listName != ''){
+
+        Storage.addList(listName),
+          
+          normalLists
+          .appendChild(UserInterface.buildListTab(listName))
+          
+        UserInterface.closeNewListPopup()
+      
+        } else { alert('Try giving your list a name') }
+      
+    } else alert('I think you already have this list')
+  }
+  
+  static deleteTask(taskDiv, task){
+    Storage.deleteTask(task)
+    taskDiv.remove()
+    
+    this.updateTaskCount()
+    this.checkForEmptyDisplay()
+  }
+  
+  static editListsMenu(){
+    
+    const normalLists = document.getElementById('normal-section');
+    
+    const listsMenu = document.getElementById('lists-menu');
+    
+    normalLists
+    .childNodes
+    .forEach(list => {
+      if(list.hasAttribute('data-name')){
+        
+        list
+        .querySelector('.delete-list')
+        .onclick = () => {
+          Storage.deleteList(list.getAttribute('data-name'))
+        
+          
+       if(Storage.getLists().length < 2){
+          listsMenu
+          
+          .querySelector('#add-list')
+          .style.display = 'block';
+          
+          listsMenu
+          .querySelector('#cancel-button')
+          .style.display = 'none';
+          
+          listsMenu
+          .querySelector('#save-changes')
+          .style.display = 'none';
+          
+        } else {
+          listsMenu
+          .querySelector('#save-changes')
+          .style.display = 'block'
+        }
+        
+        normalLists
+          .removeChild(list)
+          
+          
+          UserInterface.loadTimeBasedLists()
+          UserInterface.updateTaskCount()
+          
+          UserInterface.loadHome(UserInterface.currentList)
+          
+          
+        }
+        
+      } })
+  }
+  
+  static saveChanges(taskDiv, oldData){
+    const data = UserInterface.getFormData('edit-form')
+    
+    if(this.validateData(data, oldData)){
+    
+    UserInterface.updateTask(
+      taskDiv, 
+      Storage.getTask(data))
+    UserInterface.closeEditTaskPopup(
+      taskDiv)
+      
+    UserInterface.loadHome(UserInterface.currentList)
+      
+    }
+    
+  }
+  
+  static cancelEditListsMenu(){
+    
+    const normalLists = document.getElementById('normal-section')
+    
+    normalLists
+    .childNodes
+    .forEach(list => {
+      if(list.hasAttribute('data-name')){
+        
+        list
+        .querySelector('.list-task-count')
+        .textContent = Storage.getList(
+          list.getAttribute('data-name'))
+          .getTasks().length
+        
+      }
+      
+    })
+  }
+  
+  // GET
+  
+  static getEditStatus(){
+    const listsMenu = document.getElementById('lists-menu')
+      
+      if(listsMenu.getAttribute('data-edit-status') === 'edit'
+      ){
+        return true
+      } else{
+        return false
+      }
+
+  }
+  
+  static getFormData(extention){
+    const form = document.querySelector(`#task-${extention}`)
+    
+    if(!form) return
+    
+      let data = {
+        name: form[0].value,
+        details: form[1].value,
+        duedate: form[2].value,
+        urgency: form[3].value,
+        list: form[4].value
+      }
+      
+      return data 
+    
+  }
+  
+  static getListFormData(){
+    const listForm = document.querySelector('#list-form')
+    
+    if(!listForm) return
+  
+      return listForm[0].value
+  }
+  
+ 
+  //OPEN AND CLOSE
+  
+  static openListTab(tab, tabName){
+    const main = document.querySelector('main')
+      
+    const timeTabs = ['Today', 'This Week', 'Overdue']
+        
+    tab.onclick = () => {
+      
+    if(!this.getEditStatus()){
+      UserInterface.currentList = tabName,
+      UserInterface.loadHome(UserInterface.currentList)
+      
+      if(timeTabs.includes(tabName)){
+        main
+          .querySelector('#add-task')
+            .style.display = 'none'
+      } else {
+        main
+          .querySelector('#add-task')
+            .style.display = 'block'
+      }
+      
+      UserInterface.changeMenuDisplay()
+      
+    }} 
+    
+}
+  
+  static openNewListPopup(){
+    const popup = document.getElementById('list-form-popup')
+    
+    const listForm = document.querySelector('#list-form')
+    
+    if(!listForm)
+    UserInterface.buildListForm()
+    popup.style.display = 'block'
+    
+  }
+  
+  static closeNewListPopup(){
+    
+    const popup = document.querySelector('#list-form-popup')
+    
+    const listForm = document.querySelector('#list-form')
+    
+    if(listForm)
+    listForm.remove()
+    popup.style.display = 'none'
+    
+    UserInterface.updateTaskCount()
+
+
+  }
+  
+  static openCreateTaskPopup(){
+   UserInterface.buildTaskForm()
+    document
+    .getElementById('task-form-popup')
+    .style.display = 'block';
+  }
+  
+  static closeCreateTaskPopup(){
+    const taskFormPopup = document.querySelector('#task-form-popup')
+    
+    const taskForm = document.querySelector('#task-form')
+    
+    if(taskForm)
+    taskForm.remove()
+    taskFormPopup.style.display = ''
+      
+    UserInterface.updateTaskCount()
+  }
+  
+  static openEditTaskPopup(taskDiv){
+    const addTaskButton = document.querySelector('main #add-task')
+    
+    const editTaskPopup = document.querySelector('#task-edit-popup')
+    
+    const editTaskForm = document.querySelector('#task-edit-form')
+    
+    if(!editTaskForm){
+      UserInterface.buildEditTaskForm(taskDiv)
+      addTaskButton.style.display = 'none'
+    } else {
+      editTaskForm.remove()
+      addTaskButton.style.display = 'block'
+    }
+    
+    editTaskPopup.style.display = 'block'
+  }
+  
+  static closeEditTaskPopup(taskDiv){
+    
+    const editTaskPopup = document.querySelector('#task-edit-popup')
+    
+    const editTaskForm = document.querySelector('#task-edit-form')
+    
+    const editTaskButton = taskDiv.querySelector('#task-edit-button')
+    
+    if(!editTaskForm) return
+    
+    editTaskForm.remove()
+    editTaskPopup.style.display = 'none'
+    editTaskButton.style.display = 'block'
+    
+    UserInterface.updateTaskCount()
+    
+  }
+  
+  // INIT BUTTONS
+  
+  static initOpenMenuButton(){
+    const openMenu = document.querySelector('header #open-menu')
+    
+    if(!openMenu) return
+    
+    openMenu.onclick = () => {
+        UserInterface.changeMenuDisplay()
+    }
+    
   }
   
   static initAddTaskButton(){
@@ -733,426 +1168,6 @@ export default class UserInterface{
     document
     .getElementById('lists-menu')
     .appendChild(saveChangesButton)
-  }
-  
-  static buildListForm(){
-    
-    const listsMenu = document.getElementById('lists-menu')
-    
-    
-    const newListForm = document.createElement('form')
-    
-          newListForm.setAttribute('id', 'list-form')
-          
-      newListForm.innerHTML = ( `
-      <h2 id='form-header'> New List </h2>
-      
-      <div>
-        <label>Name</label>
-        <input type="text" name="list-name" required="true"/>
-      </div>
-        
-      <button type="button" id="create-button">
-      Add List
-      </button>
-      
-      <button type="button" id="cancel-button">
-      Cancel
-      </button>
-      
-      `)
-      
-      newListForm
-      .querySelector('#create-button')
-      .onclick = () => {
-        const normalLists = document.querySelector('#normal-section')
-        
-        UserInterface.addList(
-          normalLists,
-          UserInterface.getListFormData())
-        
-        listsMenu
-        .querySelector('#add-list')
-        .style.display = 'block'
-        
-        listsMenu
-        .querySelector('#edit-lists')
-        .style.display = 'block'
-        
-        listsMenu
-        .setAttribute('data-edit-status', 'display')
-    }
-    
-      newListForm
-      .querySelector('#cancel-button')
-      .onclick = () => {
-        UserInterface.closeNewListPopup()
-        
-        listsMenu
-        .querySelector('#add-list')
-        .style.display = 'block'
-        
-        listsMenu
-        .querySelector('#edit-lists')
-        .style.display = 'block'
-        
-        listsMenu
-        .setAttribute('data-edit-status', 'display')
-    }
-    
-    document
-    .getElementById('list-form-popup')
-    .appendChild(newListForm)
-}
-
-  static buildTaskForm(){
-    const main = document.querySelector('main')
-    
-    const newTaskForm = document.createElement('form')
-    
-          newTaskForm.setAttribute('id', 'task-form')
-    
-    newTaskForm.innerHTML = ( `
-    <h2 id="form-header">New Task</h2>
-        
-    <div>
-      <label>Name</label>
-      <input type="text" name="task-name" required="true"/>
-    </div>
-    
-    <div>
-      <label>Details</label>
-      <input type="text" name="task-details"/>
-    </div>
-    
-    <div>
-      <label>Duedate</label>
-      <input type="date" name="task-duedate"/>
-    </div>
-    
-    <div>
-    
-      <label>Urgency</label>
-      <select id="urgency-selection"
-      name="task-urgency">
-      
-        <option value='No Urgency' disabled selected> No Urgency (Default)</option>
-        
-        <option> Low </option>
-        
-        <option> Medium </option>
-        
-        <option> High </option>
-        
-      </select>
-      
-    </div>
-    
-    <div>
-      <label>List</label>
-      <select id="list-selection" name="task-list">
-  
-      </select>
-    </div>
-    
-    
-  <button type="button" id="create-button">
-  Add Task
-  </button>
-  
-  <button type="button" id="cancel-button"> Cancel
-  </button>
-  
-    ` )
-    
-    Storage
-    .getLists()
-    .forEach((list) => {
-      const option = document.createElement('option')
-      
-            option.textContent = list.name;
-            
-      newTaskForm
-      .querySelector('#list-selection')
-      .appendChild(option)
-      
-    })
-    
-    newTaskForm
-    .querySelector('#cancel-button')
-    .onclick = () => {
-      UserInterface.closeCreateTaskPopup()
-      
-      main
-      .querySelector('#add-task')
-      .style.display = 'block'
-    }
-    
-    newTaskForm
-    .querySelector('#create-button')
-    .onclick = () => {
-
-      UserInterface.addTask(
-        UserInterface.currentList,
-        UserInterface.getFormData('form'))
-        
-      main
-      .querySelector('#add-task')
-      .style.display = 'block'
-        
-    }
-    
-    document
-    .getElementById('task-form-popup')
-    .appendChild(newTaskForm)
-    
-  }
-  
-  static buildEditTaskForm(taskDiv){
-    
-    const oldData = {
-      name: taskDiv.querySelector('#task-name').textContent,
-      details: taskDiv.querySelector('#task-details').textContent,
-      duedate: taskDiv.querySelector('#task-duedate').textContent,
-      urgency: taskDiv.querySelector('#task-urgency').textContent,
-      list: taskDiv.querySelector('#task-list').textContent,
-      
-    }
-    
-    
-    const editTaskPopup = document.querySelector('#task-edit-popup')
-    
-    const editTaskForm = document.createElement('form');
-    
-          editTaskForm.setAttribute('id', 'task-edit-form')
-    
-    editTaskForm.innerHTML = ( `<h2> Edit Task </h2>
-    
-    <div>
-      <label>Name</label>
-      <input type='text' class='edit-popup-name'/> 
-    </div>
-    
-    <div>
-      <label>Details</label>
-      <input type='text' class='edit-popup-details'/> 
-    </div>
-    
-    <div>
-      <label>Duedate</label>
-      <input type='date' class='edit-popup-duedate'/> 
-    </div>
-    
-    <div>
-      <label>Urgency</label>
-      <select class='edit-popup-urgency'>
-        <option> No Urgency </option>
-        <option> Low </option>
-        <option> Medium </option>
-        <option> High </option>
-      </select> 
-    </div>
-    
-    <div>
-      <label>List</label>
-      <select class='edit-popup-list'>
-        </select>
-    </div>
-    
-    <button type='button' class='edit-popup-save'> Save Changes </button>
-    
-    <button type='button' class='edit-popup-cancel'> Cancel </button> ` )
-    
-    Storage
-    .getLists()
-    .forEach((list) => {
-      const option = document.createElement('option')
-      
-            option.textContent = list.name
-            
-      editTaskForm
-        .querySelector('.edit-popup-list')
-          .appendChild(option)
-      
-    })
-    
-    for(let key in oldData){
-      editTaskForm
-        .querySelector(`.edit-popup-${key}`)
-          .value = oldData[key]
-      if(key == 'duedate' && oldData[key] !== 'No Date'){
-        editTaskForm
-        .querySelector(`.edit-popup-${key}`)
-          .value = formatDate(oldData.duedate, 'yyyy-MM-dd')
-      }
-    }
-    
-    editTaskForm
-      .querySelector('.edit-popup-save')
-        .onclick = () => {
-          UserInterface.saveChanges(taskDiv, oldData)
-        }
-    
-    editTaskForm
-      .querySelector('.edit-popup-cancel')
-        .onclick = () => {
-      UserInterface.closeEditTaskPopup(taskDiv)}
-    
-    editTaskPopup
-    .appendChild(editTaskForm)
-  }
-  
-  static editListsMenu(){
-    
-    const normalLists = document.getElementById('normal-section');
-    
-    const listsMenu = document.getElementById('lists-menu');
-    
-    normalLists
-    .childNodes
-    .forEach(list => {
-      if(list.hasAttribute('data-name')){
-        
-        list
-        .querySelector('.delete-list')
-        .onclick = () => {
-          Storage.deleteList(list.getAttribute('data-name'))
-        
-          
-       if(Storage.getLists().length < 2){
-          listsMenu
-          
-          .querySelector('#add-list')
-          .style.display = 'block';
-          
-          listsMenu
-          .querySelector('#cancel-button')
-          .style.display = 'none';
-          
-          listsMenu
-          .querySelector('#save-changes')
-          .style.display = 'none';
-          
-        } else {
-          listsMenu
-          .querySelector('#save-changes')
-          .style.display = 'block'
-        }
-        
-        normalLists
-          .removeChild(list)
-          
-          
-          UserInterface.loadTimeBasedLists()
-          UserInterface.updateTaskCount()
-          
-          UserInterface.loadHome(UserInterface.currentList)
-          
-          
-        }
-        
-      } })
-  }
-  
-  static cancelEditListsMenu(){
-    
-    const normalLists = document.getElementById('normal-section')
-    
-    normalLists
-    .childNodes
-    .forEach(list => {
-      if(list.hasAttribute('data-name')){
-        
-        list
-        .querySelector('.list-task-count')
-        .textContent = Storage.getList(
-          list.getAttribute('data-name'))
-          .getTasks().length
-        
-      }
-      
-    })
-  }
-  
-  static openNewListPopup(){
-    const popup = document.getElementById('list-form-popup')
-    
-    const listForm = document.querySelector('#list-form')
-    
-    if(!listForm)
-    UserInterface.buildListForm()
-    popup.style.display = 'block'
-    
-  }
-  
-  static closeNewListPopup(){
-    
-    const popup = document.querySelector('#list-form-popup')
-    
-    const listForm = document.querySelector('#list-form')
-    
-    if(listForm)
-    listForm.remove()
-    popup.style.display = 'none'
-    
-    UserInterface.updateTaskCount()
-
-
-  }
-  
-  static openCreateTaskPopup(){
-   UserInterface.buildTaskForm()
-    document
-    .getElementById('task-form-popup')
-    .style.display = 'block';
-  }
-  
-  static closeCreateTaskPopup(){
-    const taskFormPopup = document.querySelector('#task-form-popup')
-    
-    const taskForm = document.querySelector('#task-form')
-    
-    if(taskForm)
-    taskForm.remove()
-    taskFormPopup.style.display = ''
-      
-    UserInterface.updateTaskCount()
-  }
-  
-  static openEditTaskPopup(taskDiv){
-    const addTaskButton = document.querySelector('main #add-task')
-    
-    const editTaskPopup = document.querySelector('#task-edit-popup')
-    
-    const editTaskForm = document.querySelector('#task-edit-form')
-    
-    if(!editTaskForm){
-      UserInterface.buildEditTaskForm(taskDiv)
-      addTaskButton.style.display = 'none'
-    } else {
-      editTaskForm.remove()
-      addTaskButton.style.display = 'block'
-    }
-    
-    editTaskPopup.style.display = 'block'
-  }
-  
-  static closeEditTaskPopup(taskDiv){
-    
-    const editTaskPopup = document.querySelector('#task-edit-popup')
-    
-    const editTaskForm = document.querySelector('#task-edit-form')
-    
-    const editTaskButton = taskDiv.querySelector('#task-edit-button')
-    
-    if(!editTaskForm) return
-    
-    editTaskForm.remove()
-    editTaskPopup.style.display = 'none'
-    editTaskButton.style.display = 'block'
-    
-    UserInterface.updateTaskCount()
-    
   }
   
 }
