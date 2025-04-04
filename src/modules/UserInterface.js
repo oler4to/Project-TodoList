@@ -286,6 +286,8 @@ export default class UserInterface{
   }
   
   static buildTask(task){
+    console.log(task)
+    
     const taskDiv = document.createElement('div')
           taskDiv.setAttribute('id', 'task')
           
@@ -319,8 +321,6 @@ export default class UserInterface{
      
      deleteTaskButton.onclick = () => {
       UserInterface.deleteTask(taskDiv, task)
-      UserInterface.updateTaskCount()
-      UserInterface.checkForEmptyDisplay()
      }
      
      const editTaskButton = taskDiv.querySelector('#task-edit-button');
@@ -340,6 +340,9 @@ export default class UserInterface{
   
     Storage.deleteTask(task.list, task.name )
     tasksContainer.removeChild(taskDiv)
+    
+    this.updateTaskCount()
+    this.checkForEmptyDisplay()
   }
   
   static editTask(taskDiv, task){
@@ -434,8 +437,8 @@ export default class UserInterface{
   }
   
   static validateData(data){
-    if(!Storage.checkForPreExistingTask(
-    data.list, data.name)){
+    if(Storage.checkForPreExistingTask(
+    data.list, data.name) == false){
       
       if(data.name !== ''){
         
@@ -456,27 +459,27 @@ export default class UserInterface{
     
     const data = UserInterface.getFormInput('form')
     
-        if(UserInterface.validateData(data)){
-          
-          if(currentList == 'All'){
-        
-          tasksContainer.insertBefore(
-           UserInterface.buildTask(
-              Storage.getTask(data)), 
-            tasksContainer.firstElementChild)
-           
+     if(!UserInterface.validateData(data)) return
+
+        if(currentList == 'All'){
+      
+        tasksContainer.insertBefore(
+         UserInterface.buildTask(
+            Storage.getTask(data)), 
+          tasksContainer.firstElementChild)
+         
         } else if(currentList == content.list && content.list != 'None'){
-          
-          tasksContainer.insertBefore(
-            UserInterface.buildTask(
-              Storage.getTask(data)), 
-            tasksContainer.firstElementChild)
-        }
+        
+        tasksContainer.insertBefore(
+          UserInterface.buildTask(
+            Storage.getTask(data)), 
+          tasksContainer.firstElementChild)
+      }
           
       UserInterface.closeCreateTaskPopup()
       UserInterface.checkForEmptyDisplay()
           
-        }
+  
   }
   
   static initAddTaskButton(){
