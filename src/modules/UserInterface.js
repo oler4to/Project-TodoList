@@ -291,14 +291,14 @@ export default class UserInterface{
           taskDiv.setAttribute('id', 'task')
           
       taskDiv.innerHTML = (
-      ` <div>
+      ` <div id='task-head'>
       <span id='complete-status'>${String.fromCodePoint(0x2713)}</span>
       <span id='task-name'>${task.name}</span>
       <span id='task-duedate'>${task.getDate()}</span>
       <span id='task-expand'>+</span>
         </div>
         
-        <div>
+        <div id='task-more-details'>
       <span id='task-details'>${task.details}</span>
       <span id='task-urgency'>${task.urgency}</span>
       <span id='task-list'>${task.list}</span>
@@ -316,6 +316,12 @@ export default class UserInterface{
         </div>
         
       ` )
+      
+    const moreDetailsSection = taskDiv.querySelector('#task-more-details')
+      
+    const expandTask = taskDiv.querySelector('#task-expand')
+    
+    
       
     const changeCompleteStatus = taskDiv.querySelector('#complete-status')
     
