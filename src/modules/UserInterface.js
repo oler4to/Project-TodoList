@@ -276,6 +276,8 @@ export default class UserInterface{
             .style.display = 'block'
       }
       
+      UserInterface.changeMenuDisplay()
+      
     }} 
     
 }
@@ -413,7 +415,7 @@ export default class UserInterface{
   }
   
   static saveChanges(taskDiv, oldData){
-    const data = UserInterface.getFormInput('edit-popup')
+    const data = UserInterface.getFormData('edit-popup')
     
     if(this.validateData(data, oldData)){
     
@@ -464,25 +466,29 @@ export default class UserInterface{
     } else alert('I think you already have this list')
   }
   
-  static getFormInput(extention){
+  static getFormData(extention){
     const form = document.querySelector(`#task-${extention}`)
     
-    let data = {
-      name: form[0].value,
-      details: form[1].value,
-      duedate: form[2].value,
-      urgency: form[3].value,
-      list: form[4].value
-    }
+    if(!form) return
     
-    return data 
+      let data = {
+        name: form[0].value,
+        details: form[1].value,
+        duedate: form[2].value,
+        urgency: form[3].value,
+        list: form[4].value
+      }
+      
+      return data 
     
   }
   
-  static getListFormInput(){
+  static getListFormData(){
     const listForm = document.querySelector('#list-form')
+    
+    if(!listForm) return
   
-    return listForm[0].value
+      return listForm[0].value
   }
   
   static validateData(data, data2){
@@ -510,7 +516,7 @@ export default class UserInterface{
   static createTask(currentList, content){
     const tasksContainer = document.querySelector('#tasks-container')
     
-    const data = UserInterface.getFormInput('form')
+    const data = UserInterface.getFormData('form')
     
      if(!UserInterface.validateData(data, 'new')) return
 
@@ -786,7 +792,7 @@ export default class UserInterface{
         
         UserInterface.addList(
           normalLists,
-          UserInterface.getListFormInput())
+          UserInterface.getListFormData())
         
         listsMenu
         .querySelector('#add-list')
@@ -911,7 +917,7 @@ export default class UserInterface{
 
       UserInterface.createTask(
         UserInterface.currentList,
-        UserInterface.getFormInput('form'))
+        UserInterface.getFormData('form'))
         
       main
       .querySelector('#add-task')
