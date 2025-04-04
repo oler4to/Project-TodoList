@@ -99,7 +99,6 @@ export default class Storage {
     
     Storage.updateStorage(todo)
     
-    return Storage.getTask(task.list, task.name)
 
   }
   
@@ -114,7 +113,7 @@ export default class Storage {
         
     } else {
       
-    todo.getList(oldTask.list).getTask(oldTask.name).setFields(
+    todo.getList(oldTask.list).getTask(oldTask).setFields(
       newTask.name, newTask.details,
       newTask.duedate, newTask.urgency )
       
@@ -122,7 +121,7 @@ export default class Storage {
       
     }
     
-     return Storage.getTask(newTask.list, newTask.name)
+     return Storage.getTask(newTask)
   }
   
   static getList(listName){
@@ -180,11 +179,11 @@ export default class Storage {
     }
   }
   
-  static getTask(listName,taskName){
+  static getTask(task){
     const todo = Storage.getTodo();
     
-    return todo.getList(listName)
-    .getTask(taskName)
+    return todo.getList(task.list)
+    .getTask(task.name)
   }
   
   static deleteTask(listName, taskName){
