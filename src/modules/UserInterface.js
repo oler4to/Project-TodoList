@@ -258,10 +258,9 @@ export default class UserInterface{
     .childNodes
       .forEach(list => {
         
-        if(list.hasAttribute('data-name') == true){
+        if(list.hasAttribute('data-name')){
           
-          if(Storage.checkForPreExistingList(list.getAttribute('data-name'))
-          !== false)
+          if(Storage.checkForPreExistingList(list.getAttribute('data-name')))
           
           list
           .querySelector('.list-task-count')
