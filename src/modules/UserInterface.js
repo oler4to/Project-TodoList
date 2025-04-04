@@ -22,6 +22,7 @@ export default class UserInterface{
     UserInterface.initCancelEditListsButton()
     UserInterface.initSaveChangesButton()
     
+    
   }
   
   static loadHome(listName){
@@ -133,15 +134,43 @@ export default class UserInterface{
     }
     
     UserInterface.checkForEmptyDisplay()
+  
+  }
+  
+  static setupNoTasksMessage(){
+    const tasksContainer = document.getElementById('tasks-container')
+    
+    const noTasksMessage = document.createElement('span')
+    
+          noTasksMessage.setAttribute('class', 'no-tasks-message')
+          noTasksMessage.textContent = "Can't display tasks that don't exist"
+    
+   document
+    .getElementById('tasks-container')
+    .appendChild(noTasksMessage)
   }
   
   static checkForEmptyDisplay(){
     const tasksContainer = document.querySelector('#tasks-container')
     
-    if(tasksContainer.children.length < 1){
-        tasksContainer.innerHTML += 
-        ` <span> No Tasks Here </span> `
+    if(!tasksContainer) return
+    
+    const taskPresent = document.querySelector('#tasks-container #task')
+    
+    const noTasksMessage = document.querySelector('#tasks-container .no-tasks-message')
+    
+    if(!taskPresent){
+      
+      if(!noTasksMessage){
+          this.setupNoTasksMessage()
       }
+    
+    } else {
+      if(noTasksMessage){
+        noTasksMessage.remove()
+      }
+    }
+    
   }
   
   static createListTab(listName){
