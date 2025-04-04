@@ -195,13 +195,21 @@ export default class Storage {
     Storage.updateStorage(todo)
   }
   
-  static checkForPreExistingTask(listName, taskName){
+  static checkForPreExistingTask(data){
     const todo = Storage.getTodo()
     
-  return todo
-    .getList(listName)
-    .getTasks()
-    .some((task) => task.name === taskName)
+    const allTasks = todo.getAllTasks().tasks
+    
+    const isDuplicate = 
+    allTasks.some((task) =>
+      task.name.trim('') === data.name.trim('') &&
+      task.details.trim('') === data.details.trim('') &&
+      task.duedate === data.duedate &&
+      task.urgency === data.urgency &&
+      task.list === data.list
+      )
+    
+    return isDuplicate
   }
   
   static checkForPreExistingList(listName){
