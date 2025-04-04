@@ -60,7 +60,6 @@ export default class UserInterface{
     
     if(!tasksContainer) return
     
-    UserInterface.clearDisplay(tasksContainer)
     UserInterface.makeSectionHead(listName)
     UserInterface.loadTasks(tasksContainer, listName)
     
@@ -70,31 +69,6 @@ export default class UserInterface{
     const sectionHeader = document.getElementById('main-header');
     
           sectionHeader.textContent = listName;
-  }
-  
-  static clearDisplay(tasksContainer){
-    tasksContainer.innerHTML = ''
-  }
-  
-  static clearFormInput(extention){
-    
-    for(let i = 0; i <= 4; i++){
-      document
-      .querySelector(`#task-${extention}`)[i]
-      .value = ''
-      
-      if(i == 3){
-        document
-        .querySelector(`#task-${extention}`)[i]
-        .value = 'No Urgency'
-      } else if (i == 4){
-        document
-        .querySelector(`#task-${extention}`)[i]
-        .value = 'None'
-      }
-      
-    }
-    
   }
   
   static loadNormalLists(){
