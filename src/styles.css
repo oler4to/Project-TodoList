@@ -18,6 +18,11 @@
   src: url('./fonts/Baloo-Regular.ttf')
 }
 
+@font-face {
+  font-family: 'Panton';
+  src: url('./fonts/Panton-BlackCaps.otf')
+}
+
 :root {
   --colourOne: #CBFFDB
   --colourTwo: #7466F8
