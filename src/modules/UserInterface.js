@@ -27,14 +27,12 @@ export default class UserInterface{
     
   }
   
-  static initOpenMenuButton(){
-    const openMenu = document.querySelector('header #open-menu')
-    
+  static changeMenuDisplay() {
     const listsMenu = document.querySelector('#lists-menu')
     
-    openMenu.onclick = () => {
+    if(!listsMenu) return
     
-      if(listsMenu.getAttribute('data-display-status') == 'false'){
+    if(listsMenu.getAttribute('data-display-status') == 'false'){
         
         listsMenu.style.display = 'flex'
         listsMenu.setAttribute('data-display-status', 'true')
@@ -43,6 +41,15 @@ export default class UserInterface{
         listsMenu.style.display = 'none'
         listsMenu.setAttribute('data-display-status', 'false')
       }
+  }
+  
+  static initOpenMenuButton(){
+    const openMenu = document.querySelector('header #open-menu')
+    
+    if(!openMenu) return
+    
+    openMenu.onclick = () => {
+        UserInterface.changeMenuDisplay()
     }
     
   }
@@ -50,6 +57,8 @@ export default class UserInterface{
   static loadHome(listName){
     
     const tasksContainer = document.querySelector('#tasks-container');
+    
+    if(!tasksContainer) return
     
     UserInterface.clearDisplay(tasksContainer)
     UserInterface.makeSectionHead(listName)
