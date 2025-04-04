@@ -24,7 +24,7 @@ module.exports = {
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(woff|otf)$/i,
+        test: /\.(woff|otf|ttf)$/i,
         type: 'asset/resource',
       },
     ],
