@@ -2,8 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  
-  
+
   mode: 'development',
   entry: "./src/index.js",
   output: {
@@ -23,6 +22,10 @@ module.exports = {
       {
         test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
+      },
+      {
+        test: /\.(woff|otf)$/i,
+        type: 'asset/resource',
       },
     ],
   },
