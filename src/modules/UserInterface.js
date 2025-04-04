@@ -177,55 +177,45 @@ export default class UserInterface{
     const listsMenu =
     document.getElementById('lists-menu')
     
-    const div = document.createElement('span');
-          div.setAttribute('id', 'list-tab')
-          
-    if(listName == 'None'){
-      
-      div.innerHTML = `← Back to Mainpage`;
-      UserInterface.openListTab(div, 'All')
-      
-    } else {
-      div.innerHTML = 
-      `${listName}
-      <span class='list-task-count'>
-      </span> 
-      <button class='delete-list' style='display:none'>
-      Delete
-      </button>
-      `
-      
-      div.setAttribute('data-name', listName)
-      
-        if(
-          (listName == 'Today')||
-          (listName =='This Week')|| 
-          (listName =='Overdue')
-          ){
-            
-            div
-            .querySelector('.list-task-count')
-            .textContent = Storage.getTasksDue(listName).length
-            
-         } else {
-            
-            div
-            .querySelector('.list-task-count')
-            .textContent = Storage.getList(listName).getTasks().length
-          }
-      
-      UserInterface.openListTab(div, listName)
-    }
+    if(!listsMenu) return
     
-    return div
+    const tab = document.createElement('span')
+          tab.setAttribute('id', 'list-tab')
+          
+      if(listName == 'None'){
+        
+        tab.innerHTML = `← Back to Mainpage`;
+        UserInterface.openListTab(tab, 'All')
+        
+      } else {
+        tab.innerHTML = `${listName} <span class='list-task-count'> </span> 
+        <button class='delete-list' style='display:none'> Delete </button>
+        `
+        
+          if(['Today', 'This Week', 'Overdue'].includes(listName)){
+              
+              tab
+              .querySelector('.list-task-count')
+              .textContent = Storage.getTasksDue(listName).length
+              
+           } else {
+              
+              tab
+              .querySelector('.list-task-count')
+              .textContent = Storage.getList(listName).getTasks().length
+            }
+        
+        tab.setAttribute('data-name', listName)
+        UserInterface.openListTab(tab, listName)
+      }
+    
+    return tab
   }
   
-  static editStatus(){
+  static getEditStatus(){
     const listsMenu = document.getElementById('lists-menu')
-    
-    const edit = document.HTMLButtonElement
       
-      if(listsMenu.getAttribute('data-status') !== 'edit'
+      if(listsMenu.getAttribute('data-status') === 'edit'
       ){
         return true
       } else{
@@ -235,41 +225,27 @@ export default class UserInterface{
   }
   
   static openListTab(tab, tabName){
-    
     const main = document.querySelector('main')
       
     const timeTabs = ['Today', 'This Week', 'Overdue']
-      
-    if (timeTabs.includes(tabName) == true){
         
     tab.onclick = () => {
-    if(UserInterface.editStatus() !== false){
-            UserInterface.currentList = tabName,
-            UserInterface.loadHome(
-              UserInterface.currentList)
-            main
-            .querySelector('#add-task')
-            .style.display = 'none'
-       }
       
-    }
+    if(!this.getEditStatus()){
+      UserInterface.currentList = tabName,
+      UserInterface.loadHome(UserInterface.currentList)
       
-    } else {
-      
-      tab.onclick = () => {
-      if(UserInterface.editStatus() !== false){
-        
-        UserInterface.currentList = tabName,
-        UserInterface.loadHome(
-          UserInterface.currentList)
-          
+      if(timeTabs.includes(tabName)){
         main
-        .querySelector('#add-task')
-        .style.display = 'block'
+          .querySelector('#add-task')
+            .style.display = 'none'
+      } else {
+        main
+          .querySelector('#add-task')
+            .style.display = 'block'
       }
       
-    }
-  } 
+    }} 
     
 }
   
