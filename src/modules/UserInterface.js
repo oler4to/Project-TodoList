@@ -316,6 +316,12 @@ export default class UserInterface{
         </div>
         
       ` )
+      
+    const changeCompleteStatus = taskDiv.querySelector('#complete-status')
+    
+    changeCompleteStatus.onclick = () => {
+      UserInterface.deleteTask(taskDiv, task)
+    }
      
      const deleteTaskButton = taskDiv.querySelector('#task-delete-button')
      
