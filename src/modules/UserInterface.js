@@ -286,8 +286,7 @@ export default class UserInterface{
   }
   
   static buildTask(task){
-    console.log(task)
-    
+
     const taskDiv = document.createElement('div')
           taskDiv.setAttribute('id', 'task')
           
@@ -873,75 +872,46 @@ export default class UserInterface{
   
   static createEditTaskPopup(taskDiv, oldData){
     
-    const task = {
-      name: taskDiv.children[0].children[0].textContent,
-      details: taskDiv.children[1].children[0].textContent,
-      duedate: taskDiv.children[0].children[1].textContent,
-      urgency: taskDiv.children[1].children[1].textContent,
-      list: taskDiv.children[1].children[2].textContent,
-    }
-    
-    
     const popupContainer = document.querySelector('#task-edit-popup');
     
           popupContainer.style.display = 'none'
     
-    popupContainer.innerHTML = ( 
-    `
-    <h2> Edit Task </h2>
+    popupContainer.innerHTML = ( `<h2> Edit Task </h2>
     
     <div>
-    <label>Name</label>
-    <input type='text' class='task-popup-name' value='${task.name}'/> 
+      <label>Name</label>
+      <input type='text' class='edit-popup-name'/> 
     </div>
     
     <div>
-    <label>Details</label>
-    <input type='text' class='task-popup-details' value='${task.details}'/> 
+      <label>Details</label>
+      <input type='text' class='edit-popup-details'/> 
     </div>
     
     <div>
-    <label>Duedate</label>
-    <input type='date' class='task-popup-duedate'/> 
+      <label>Duedate</label>
+      <input type='date' class='edit-popup-duedate'/> 
     </div>
     
     <div>
-    <label>Urgency</label>
-    <select class='task-popup-urgency'>
-      
-      <option> No Urgency </option>
-      
-      <option> Low </option>
-      
-      <option> Medium </option>
-     
-      <option> High </option>
-    
-    </select> 
+      <label>Urgency</label>
+      <select class='edit-popup-urgency'>
+        <option> No Urgency </option>
+        <option> Low </option>
+        <option> Medium </option>
+        <option> High </option>
+      </select> 
     </div>
     
     <div>
-    <label>List</label>
-    <select class='task-popup-list'>
-    
-      </select>
+      <label>List</label>
+      <select class='edit-popup-list'>
+        </select>
     </div>
     
-    <button type='button' class='popup-save-button'>
-    Save Changes
-    </button>
+    <button type='button' class='edit-popup-save'> Save Changes </button>
     
-    <button type='button' class='popup-cancel-button'>
-    Cancel
-    </button>
-    
-    `)
-    
-    if(task.duedate !== 'No Date'){
-      document
-      .querySelector('.task-popup-duedate')
-      .value = formatDate(task.duedate, 'yyyy-MM-dd')
-    }
+    <button type='button' class='edit-popup-cancel'> Cancel </button> ` )
     
     Storage
     .getLists()
@@ -951,25 +921,30 @@ export default class UserInterface{
             option.textContent = list.name
             
       popupContainer
-      .querySelector('.task-popup-list')
-      .appendChild(option)
+        .querySelector('.edit-popup-list')
+          .appendChild(option)
       
     })
     
-    popupContainer
-      .querySelector('.task-popup-urgency').value = task.urgency;
+    for(let key in oldData){
+      popupContainer
+        .querySelector(`.edit-popup-${key}`)
+          .value = oldData[key]
+      if(key == 'duedate' && oldData[key] !== 'No Date'){
+        popupContainer
+        .querySelector(`.edit-popup-${key}`)
+          .value = formatDate(oldData.duedate, 'yyyy-MM-dd')
+      }
+    }
     
     popupContainer
-      .querySelector('.task-popup-list').value = task.list;
-    
-    popupContainer
-      .querySelector('.popup-save-button')
+      .querySelector('.edit-popup-save')
         .onclick = () => {
           UserInterface.saveChanges(taskDiv, oldData)
         }
     
     popupContainer
-      .querySelector('.popup-cancel-button')
+      .querySelector('.edit-popup-cancel')
         .onclick = () => {
       UserInterface.closeEditTaskPopup(taskDiv)}
   }
