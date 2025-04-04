@@ -121,7 +121,6 @@ export default class Storage {
       
     }
     
-     return Storage.getTask(newTask)
   }
   
   static getList(listName){
