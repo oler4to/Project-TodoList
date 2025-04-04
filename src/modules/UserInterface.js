@@ -390,32 +390,23 @@ export default class UserInterface{
      const editTaskButton = taskDiv.querySelector('#task-edit-button');
      
      editTaskButton.onclick = () => {
-       UserInterface.editTask(taskDiv, task)
-       editTaskButton.style.display = 'none'
+       UserInterface.openEditTaskPopup(taskDiv)
      }
 
-    
     return taskDiv
   
   }
   
   static deleteTask(taskDiv, task){
-    const tasksContainer = document.querySelector('#tasks-container')
-  
-    Storage.deleteTask(task.list, task.name )
-    tasksContainer.removeChild(taskDiv)
+    Storage.deleteTask(task)
+    taskDiv.remove()
     
     this.updateTaskCount()
     this.checkForEmptyDisplay()
   }
   
-  static editTask(taskDiv, task){
-    UserInterface.buildEditTaskForm(taskDiv, task)
-    UserInterface.openEditTaskPopup()
-  }
-  
   static saveChanges(taskDiv, oldData){
-    const data = UserInterface.getFormData('edit-popup')
+    const data = UserInterface.getFormData('edit-form')
     
     if(this.validateData(data, oldData)){
     
@@ -447,8 +438,6 @@ export default class UserInterface{
   }
   
   static addList(normalLists, listName){
-    
-    const listsMenu = document.getElementById('lists-menu')
       
     if(Storage.checkForPreExistingList(listName) !== true){
         
@@ -953,13 +942,14 @@ export default class UserInterface{
       
     }
     
-    const popupContainer = document.querySelector('#task-edit-popup');
     
-    if(!popupContainer) return
+    const editTaskPopup = document.querySelector('#task-edit-popup')
     
-          popupContainer.style.display = 'none'
+    const editTaskForm = document.createElement('form');
     
-    popupContainer.innerHTML = ( `<h2> Edit Task </h2>
+          editTaskForm.setAttribute('id', 'task-edit-form')
+    
+    editTaskForm.innerHTML = ( `<h2> Edit Task </h2>
     
     <div>
       <label>Name</label>
@@ -1003,33 +993,36 @@ export default class UserInterface{
       
             option.textContent = list.name
             
-      popupContainer
+      editTaskForm
         .querySelector('.edit-popup-list')
           .appendChild(option)
       
     })
     
     for(let key in oldData){
-      popupContainer
+      editTaskForm
         .querySelector(`.edit-popup-${key}`)
           .value = oldData[key]
       if(key == 'duedate' && oldData[key] !== 'No Date'){
-        popupContainer
+        editTaskForm
         .querySelector(`.edit-popup-${key}`)
           .value = formatDate(oldData.duedate, 'yyyy-MM-dd')
       }
     }
     
-    popupContainer
+    editTaskForm
       .querySelector('.edit-popup-save')
         .onclick = () => {
           UserInterface.saveChanges(taskDiv, oldData)
         }
     
-    popupContainer
+    editTaskForm
       .querySelector('.edit-popup-cancel')
         .onclick = () => {
       UserInterface.closeEditTaskPopup(taskDiv)}
+    
+    editTaskPopup
+    .appendChild(editTaskForm)
   }
   
   static editListsMenu(){
@@ -1107,19 +1100,25 @@ export default class UserInterface{
   static openNewListPopup(){
     const popup = document.getElementById('list-form-popup')
     
+    const listForm = document.querySelector('#list-form')
+    
+    if(!listForm)
+    UserInterface.buildListForm()
     popup.style.display = 'block'
+    
   }
   
   static closeNewListPopup(){
     
-    
-    UserInterface.updateTaskCount()
     const popup = document.querySelector('#list-form-popup')
     
-    const listNameInput = document.querySelector('#list-form input')
+    const listForm = document.querySelector('#list-form')
     
-    listNameInput.value = ''
+    if(listForm)
+    listForm.remove()
     popup.style.display = 'none'
+    
+    UserInterface.updateTaskCount()
 
 
   }
@@ -1132,35 +1131,50 @@ export default class UserInterface{
   }
   
   static closeCreateTaskPopup(){
-    UserInterface.updateTaskCount()
-    UserInterface.clearFormInput('form')
-    document
-      .getElementById('task-form-popup')
-      .removeChild(
-        document.querySelector('#task-form'))
-        
-    document
-      .getElementById('task-form-popup')
-      .style.display = 'none'
+    const taskFormPopup = document.querySelector('#task-form-popup')
+    
+    const taskForm = document.querySelector('#task-form')
+    
+    if(taskForm)
+    taskForm.remove()
+    taskFormPopup.style.display = ''
       
+    UserInterface.updateTaskCount()
   }
   
-  static openEditTaskPopup(){
-    return document
-      .getElementById('task-edit-popup')
-      .style.display = 'block'
+  static openEditTaskPopup(taskDiv){
+    const addTaskButton = document.querySelector('main #add-task')
+    
+    const editTaskPopup = document.querySelector('#task-edit-popup')
+    
+    const editTaskForm = document.querySelector('#task-edit-form')
+    
+    if(!editTaskForm){
+      UserInterface.buildEditTaskForm(taskDiv)
+      addTaskButton.style.display = 'none'
+    } else {
+      editTaskForm.remove()
+      addTaskButton.style.display = 'block'
+    }
+    
+    editTaskPopup.style.display = 'block'
   }
   
   static closeEditTaskPopup(taskDiv){
-    UserInterface.clearFormInput('edit-popup')
+    
+    const editTaskPopup = document.querySelector('#task-edit-popup')
+    
+    const editTaskForm = document.querySelector('#task-edit-form')
+    
+    const editTaskButton = taskDiv.querySelector('#task-edit-button')
+    
+    if(!editTaskForm) return
+    
+    editTaskForm.remove()
+    editTaskPopup.style.display = 'none'
+    editTaskButton.style.display = 'block'
+    
     UserInterface.updateTaskCount()
-    document
-      .getElementById('task-edit-popup')
-      .style.display = 'none'
-      
-      taskDiv
-      .querySelector('#task-edit-button')
-      .style.display = 'block'
     
   }
   
