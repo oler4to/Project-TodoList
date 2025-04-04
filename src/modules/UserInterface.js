@@ -318,10 +318,29 @@ export default class UserInterface{
       ` )
       
     const moreDetailsSection = taskDiv.querySelector('#task-more-details')
+    
+    moreDetailsSection
+    .style = `height: 0;
+    overflow: hidden;`
       
     const expandTask = taskDiv.querySelector('#task-expand')
     
-    
+    expandTask.onclick = () => {
+      
+      if(moreDetailsSection.style.height == "0px"){
+       console.log(moreDetailsSection) 
+        
+      moreDetailsSection
+      .style = `height: 100px;
+      overflow: hidden;
+      transition: height 0.5s`
+      } else {
+        moreDetailsSection
+        .style = `height: 0;
+        overflow: hidden;
+        transition: height 0.5s`
+      }
+    }
       
     const changeCompleteStatus = taskDiv.querySelector('#complete-status')
     
