@@ -352,11 +352,11 @@ export default class UserInterface{
   static saveChanges(taskDiv, oldData){
     const data = UserInterface.getFormInput('edit-popup')
     
-    if(this.validateData(data, 'edit'))
+    if(this.validateData(data, oldData))
     
     UserInterface.updateTask(
       taskDiv, 
-      Storage.updateTask(oldData, data) )
+      Storage.getTask(data))
     UserInterface.closeEditTaskPopup(
       taskDiv)
     
@@ -431,15 +431,17 @@ export default class UserInterface{
     return listForm[0].value
   }
   
-  static validateData(data, action){
+  static validateData(data, data2){
     if(Storage.checkForPreExistingTask(
     data.list, data.name) == false){
       
       if(data.name !== ''){
         
-        if(action === 'new'){
+        if(data2 === 'new'){
         Storage.addTask(data)
-       } 
+       } else {
+         Storage.updateTask(data2, data)
+       }
        
         return true
         
