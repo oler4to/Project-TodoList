@@ -346,25 +346,20 @@ export default class UserInterface{
   }
   
   static editTask(taskDiv, task){
-    UserInterface.createEditTaskPopup(taskDiv)
+    UserInterface.createEditTaskPopup(taskDiv, task)
     UserInterface.openEditTaskPopup()
-    UserInterface.saveChanges(taskDiv, task)
   }
   
-  static saveChanges(taskDiv, task){
+  static saveChanges(taskDiv, oldData){
+    const data = UserInterface.getFormInput('edit-popup')
     
-    const saveChangesButton = document.querySelector('.popup-save-button')
-    
-      saveChangesButton.onclick = () => {
-        UserInterface.updateTask(
-          taskDiv, Storage.updateTask(task, UserInterface.getFormInput('edit-popup')) 
-          )
-              
-        UserInterface.closeEditTaskPopup(
-          taskDiv.children[1].children[3])
-
-        
-      }
+    if(this.validateData(data, 'edit')){
+    UserInterface.updateTask(
+      taskDiv, 
+      Storage.updateTask(oldData, data) )
+    UserInterface.closeEditTaskPopup(
+      taskDiv.children[1].children[3])
+    }
   }
   
   static updateTask(taskDiv, updatedData){
@@ -875,7 +870,7 @@ export default class UserInterface{
     
   }
   
-  static createEditTaskPopup(taskDiv){
+  static createEditTaskPopup(taskDiv, oldData){
     
     const task = {
       name: taskDiv.children[0].children[0].textContent,
@@ -965,6 +960,12 @@ export default class UserInterface{
     
     popupContainer
       .querySelector('.task-popup-list').value = task.list;
+    
+    popupContainer
+      .querySelector('.popup-save-button')
+        .onclick = () => {
+          UserInterface.saveChanges(taskDiv, oldData)
+        }
     
     popupContainer
       .querySelector('.popup-cancel-button')
