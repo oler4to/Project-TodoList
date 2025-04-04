@@ -365,29 +365,18 @@ export default class UserInterface{
   static updateTask(taskDiv, updatedData){
     const newTask = updatedData
     
-    taskDiv
-    .children[0]
-    .children[0].textContent = newTask.name
-    
-    taskDiv
-    .children[1]
-    .children[0]
-    .textContent = newTask.details
-    
-    taskDiv
-    .children[0]
-    .children[1]
-    .textContent = newTask.getDate()
-    
-    taskDiv
-    .children[1]
-    .children[1]
-    .textContent = newTask.urgency
-    
-    taskDiv
-    .children[1]
-    .children[2]
-    .textContent = newTask.list
+    for(let key in newTask){
+      console.log(taskDiv)
+      
+      taskDiv
+        .querySelector(`#task-${key}`)
+          .textContent = newTask[key]
+      if(key == 'duedate' && newTask[key] !== 'No Date'){
+        taskDiv
+        .querySelector(`#task-${key}`)
+          .textContent = formatDate(newTask.duedate, 'd MMMM yyyy')
+      }
+    }
   }
   
   static addList(normalLists, listName){
