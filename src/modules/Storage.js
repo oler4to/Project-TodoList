@@ -105,15 +105,14 @@ export default class Storage {
   static updateTask(oldTask, newTask){
     const todo = Storage.getTodo()
     
-    if(todo.getList(oldTask.list).getName !== newTask.list){
+    if(todo.getList(oldTask.list).getName() !== newTask.list){
       
-      Storage.deleteTask(
-        oldTask.list, oldTask.name);
+      Storage.deleteTask(oldTask);
       Storage.addTask(newTask);
         
     } else {
       
-    todo.getList(oldTask.list).getTask(oldTask).setFields(
+    todo.getList(oldTask.list).getTask(oldTask.name).setFields(
       newTask.name, newTask.details,
       newTask.duedate, newTask.urgency )
       
@@ -185,12 +184,12 @@ export default class Storage {
     .getTask(task.name)
   }
   
-  static deleteTask(listName, taskName){
+  static deleteTask(task){
     const todo = Storage.getTodo();
     
     todo
-    .getList(listName)
-    .deleteTask(taskName)
+    .getList(task.list)
+    .deleteTask(task.name)
     
     Storage.updateStorage(todo)
   }
