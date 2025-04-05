@@ -24,13 +24,162 @@
 }
 
 :root {
-  --colourOne: #CBFFDB
-  --colourTwo: #7466F8
-  --colourThree: #CBDCFF
-  --colourFour: #22211D
+  --colourOne: #CBFFDB;
+  --colourTwo: #7466F8;
+  --colourThree: #CBDCFF;
+  --colourFour: #22211D;
+  --colourFive: #FFFABC;
+  --colourSix: #FFCBE8;
 }
 
-all {
+* {
   all: none;
   appearance: none;
+  
+  margin: 0;
+  padding: 0;
+  
+}
+
+body {
+  
+  font-family: Poppins-Regular;
+  background-color: var(--colourFour);
+  color: var(--colourOne);
+  
+}
+
+#header {
+  display: flex;
+  flex-direction: row;
+  
+  justify-content: space-between;
+  
+  background-color: var(--colourOne);
+  color: var(--colourFour);
+}
+
+#header {
+  padding: 1pc;
+}
+
+#header > :first-child {
+  font-family: 'Refresh-Regular';
+  font-size: 38pt;
+}
+
+#open-menu {
+  font-family: 'Panton';
+  font-size: 32pt;
+  
+  align-self: center;
+}
+
+
+#lists-menu {
+  padding: 1pc;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  
+  background-color: hsl(40.5,0%,18.7%);
+  color: var(--colourOne);
+  
+  border-bottom: 4px solid var(--colourOne);
+  border-left: 4px solid var(--colourOne);
+  border-right: 4px solid var(--colourOne);
+}
+
+#lists-menu h1 {
+  font-family: Baloo-Regular;
+  font-size: 3rem;
+  
+  color: var(--colourSix);
+}
+
+#lists-menu > div {
+  display: flex;
+  flex-direction: column;
+  
+  gap: 10px;
+}
+
+#lists-menu #list-tab {
+  font-family: 'Poppins-Black';
+  
+  display: flex;
+  flex-direction: row;
+
+  align-items: center;
+  justify-content: space-between;
+  
+  font-size: 16pt;
+}
+
+#lists-menu #normal-section > :first-child {
+  font-family: 'Panton';
+  font-size: 11pt;
+  
+  position: relative;
+  top: -20px;
+  
+  width: fit-content;
+  
+  color: whitesmoke;
+  
+  border-bottom: 2px solid var(--colourOne);
+}
+
+#list-tab .list-task-count {
+  font-family: 'Panton';
+  
+  width: 0.7cm;
+  height: 0.7cm;
+  
+  background-color: var(--colourTwo);
+  color: var(--colourSix);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  border-radius: 50%;
+  
+}
+
+#list-tab button {
+  
+  font-family: 'Refresh-Regular';
+  font-weight: 700;
+  font-size: 16pt;
+  color: #d73c52;
+  
+  background: inherit;
+  border: none;
+}
+
+#lists-menu #lists-menu-buttons {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#lists-menu-buttons button {
+  width: fit-content;
+  
+  
+  font-family: 'Refresh-Regular';
+  font-size: 18pt;
+  
+  background: inherit;
+  
+  color: white;
+  
+  border: none;
+  border-bottom: 2px solid var(--colourTwo);
+}
+
+#lists-menu #add-list {
+  bottom: 10px;
+  left: -10px;
 }
