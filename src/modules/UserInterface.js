@@ -474,6 +474,8 @@ export default class UserInterface{
     
     const listsMenu = document.getElementById('lists-menu')
     
+    const listsButtons = document.getElementById('lists-menu-buttons')
+    
     
     const newListForm = document.createElement('form')
     
@@ -506,11 +508,11 @@ export default class UserInterface{
           normalLists,
           UserInterface.getListFormData())
         
-        listsMenu
+        listsButtons
         .querySelector('#add-list')
         .style.display = 'block'
         
-        listsMenu
+        listsButtons
         .querySelector('#edit-lists')
         .style.display = 'block'
         
@@ -523,11 +525,11 @@ export default class UserInterface{
       .onclick = () => {
         UserInterface.closeNewListPopup()
         
-        listsMenu
+        listsButtons
         .querySelector('#add-list')
         .style.display = 'block'
         
-        listsMenu
+        listsButtons
         .querySelector('#edit-lists')
         .style.display = 'block'
         
@@ -696,7 +698,7 @@ export default class UserInterface{
     
     const normalLists = document.getElementById('normal-section');
     
-    const listsMenu = document.getElementById('lists-menu');
+    const listsButtons = document.getElementById('lists-menu-buttons');
     
     normalLists
     .childNodes
@@ -710,21 +712,21 @@ export default class UserInterface{
         
           
        if(Storage.getLists().length < 2){
-          listsMenu
           
+          listsButtons
           .querySelector('#add-list')
           .style.display = 'block';
           
-          listsMenu
+          listsButtons
           .querySelector('#cancel-button')
           .style.display = 'none';
           
-          listsMenu
+          listsButtons
           .querySelector('#save-changes')
           .style.display = 'none';
           
         } else {
-          listsMenu
+          listsButtons
           .querySelector('#save-changes')
           .style.display = 'block'
         }
@@ -969,6 +971,8 @@ export default class UserInterface{
   static initAddListButton(){
     const listsMenu = document.getElementById('lists-menu');
     
+    const listsButtons = document.getElementById('lists-menu-buttons');
+    
     const addListButton = document.createElement('button');
     
           addListButton.setAttribute('id', 'add-list');
@@ -980,11 +984,11 @@ export default class UserInterface{
       addListButton
       .onclick = () => {
         
-        listsMenu
+        listsButtons
         .querySelector('#add-list')
         .style.display = 'none'
         
-        listsMenu
+        listsButtons
         .querySelector('#edit-lists')
         .style.display = 'none'
         
@@ -996,12 +1000,14 @@ export default class UserInterface{
       }
       
     document
-    .getElementById('lists-menu')
+    .getElementById('lists-menu-buttons')
     .appendChild(addListButton)
   }
   
   static initEditListsButton(){
     const listsMenu = document.getElementById('lists-menu')
+    
+    const listsButtons = document.getElementById('lists-menu-buttons')
     
     const editButton = document.createElement('button')
     
@@ -1016,18 +1022,18 @@ export default class UserInterface{
         
         UserInterface.editListsMenu()
         
-        listsMenu
+        listsButtons
         .querySelector('#add-list')
         .style.display = 'none'
         
-        listsMenu
+        listsButtons
         .querySelector('#edit-lists')
         .style.display = 'none'
         
         listsMenu
         .setAttribute('data-edit-status', 'edit')
         
-        listsMenu
+        listsButtons
         .querySelector('#cancel-button')
         .style.display = 'block'
         
@@ -1049,13 +1055,15 @@ export default class UserInterface{
       }
     
     document
-    .getElementById('lists-menu')
+    .getElementById('lists-menu-buttons')
     .appendChild(editButton)
     
   }
   
   static initCancelEditListsButton(){
     const listsMenu = document.getElementById('lists-menu')
+    
+    const listsButtons = document.getElementById('lists-menu-buttons')
     
     
     const cancelButton = document.createElement('button');
@@ -1073,18 +1081,18 @@ export default class UserInterface{
     
        UserInterface.cancelEditListsMenu()
        
-       listsMenu
+       listsButtons
        .querySelector('#edit-lists')
        .style.display = 'block'
        
        listsMenu
       .setAttribute('data-edit-status', 'display')
        
-       listsMenu
+       listsButtons
        .querySelector('#add-list')
        .style.display = 'block'
        
-       listsMenu
+       listsButtons
        .querySelector('#cancel-button')
        .style.display = 'none'
        
@@ -1094,7 +1102,7 @@ export default class UserInterface{
            
            list
           .querySelector('.list-task-count')
-          .style.display = 'block'
+          .style.display = 'flex'
           
            list
           .querySelector('.delete-list')
@@ -1105,12 +1113,14 @@ export default class UserInterface{
       }
     
     document
-    .getElementById('lists-menu')
+    .getElementById('lists-menu-buttons')
     .appendChild(cancelButton)
   }
   
   static initSaveChangesButton(){
     const listsMenu = document.getElementById('lists-menu');
+    
+    const listsButtons = document.getElementById('lists-menu-buttons');
     
     
     const saveChangesButton = document.createElement('button')
@@ -1128,22 +1138,22 @@ export default class UserInterface{
     
         UserInterface.cancelEditListsMenu()
       
-        listsMenu
+        listsButtons
         .querySelector('#add-list')
         .style.display = 'block'
         
-        listsMenu
+        listsButtons
         .querySelector('#edit-lists')
         .style.display = 'block'
         
         listsMenu
         .setAttribute('data-edit-status', 'display')
         
-        listsMenu
+        listsButtons
         .querySelector('#save-changes')
         .style.display = 'none'
         
-        listsMenu
+        listsButtons
         .querySelector('#cancel-button')
         .style.display = 'none'
         
@@ -1153,7 +1163,7 @@ export default class UserInterface{
            
            list
           .querySelector('.list-task-count')
-          .style.display = 'block'
+          .style.display = 'flex'
           
            list
           .querySelector('.delete-list')
@@ -1164,7 +1174,7 @@ export default class UserInterface{
       }
       
     document
-    .getElementById('lists-menu')
+    .getElementById('lists-menu-buttons')
     .appendChild(saveChangesButton)
   }
   
