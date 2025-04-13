@@ -814,13 +814,3 @@ textarea{
   
   background-color: inherit;
 }
-
-
-@media (min-width: 960px){
-  #tasks-container {
-    padding: 5px;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, 24%);
-    gap: 1rem;
-  }
-}
