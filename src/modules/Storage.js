@@ -3,10 +3,13 @@ import List from './List.js'
 import TodoList from './TodoList.js'
 import UserInterface from './UserInterface.js'
 
+import {addDays} from 'date-fns'
+
 export default class Storage {
   
   static onStartup(){
-    if(localStorage.length == 0) {
+    if(!localStorage.getItem('todo')) {
+      console.log('Hey')
     const todo = new TodoList()
     
     todo
@@ -15,7 +18,7 @@ export default class Storage {
       new Task(
         'This is not an important task',
         'Remember to do nothing!',
-        '2025-04-23',
+        new Date(),
         'Medium',
         'None'
         ))
@@ -37,7 +40,7 @@ export default class Storage {
       new Task(
         'This is another random task',
         'Remember to do some other random things!',
-        '2025-04-01',
+        addDays(new Date(), 5),
         'High',
         'Personal'
         ))
@@ -158,6 +161,11 @@ export default class Storage {
   
   static updateList(oldName, newName){
     const todo = Storage.getTodo()
+    
+    todo
+    .getList(oldName)
+    .getTasks()
+    .map(task => task.list = newName)
     
     todo
     .getList(oldName)
