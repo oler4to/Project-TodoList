@@ -60,7 +60,7 @@ body {
 #header {
   position: relative;
   
-  padding: 1dvw;
+  padding: 1vw 4vw;
   display: flex;
   flex-direction: row;
   
