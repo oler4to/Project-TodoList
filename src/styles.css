@@ -815,7 +815,7 @@ textarea{
   background-color: inherit;
 }
 
-@media (mid-width: 960px){
+@media (min-width: 960px){
   #tasks-container {
     grid-template-columns: repeat(auto-fit, calc(25% - 1rem));
   }
