@@ -156,6 +156,16 @@ export default class Storage {
     return Storage.getList(listName)
   }
   
+  static updateList(oldName, newName){
+    const todo = Storage.getTodo()
+    
+    todo
+    .getList(oldName)
+    .setName(newName)
+    
+    Storage.updateStorage(todo)
+  }
+  
   static getTasksDue(listName){
     const todo = Storage.getTodo()
     
