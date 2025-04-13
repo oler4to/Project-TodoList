@@ -406,7 +406,7 @@ export default class UserInterface{
     
     <div>
       <label>Details</label>
-      <textarea type="text" name="task-details"></textarea>
+      <textarea placeholder='Add some other details' type="text" name="task-details"></textarea>
     </div>
     
     <div>
@@ -847,9 +847,8 @@ export default class UserInterface{
         `
         
     listTab.setAttribute('data-name', newName)
-      
-
-          
+        
+        UserInterface.loadHome(newName)
         UserInterface.closeEditListPopup()
       
         } else { alert('Try giving your list a name') }
@@ -1012,12 +1011,22 @@ export default class UserInterface{
     
     const sectionHeader = document.getElementById('main-header')
     
+    const listMenuButtons = document.querySelector('#lists-menu-buttons')
+    
     if(editListForm)
     editListForm.remove()
     popup.style.display = 'none'
     
     sectionHeader
     .querySelector('button')
+    .style.display = 'block'
+    
+    listMenuButtons
+    .querySelector('#add-list')
+    .style.display = 'block'
+    
+    listMenuButtons
+    .querySelector('#edit-lists')
     .style.display = 'block'
     
     UserInterface.updateTaskCount()
