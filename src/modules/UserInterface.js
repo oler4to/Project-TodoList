@@ -25,8 +25,6 @@ export default class UserInterface{
     UserInterface.initEditListsButton()
     UserInterface.initCancelEditListsButton()
     UserInterface.initSaveChangesButton()
-    
-    
   }
   
   // LOAD, UPDATE AND CHANGE
@@ -116,7 +114,6 @@ export default class UserInterface{
     const newTask = updatedData
     
     for(let key in newTask){
-      console.log(taskDiv)
       
       taskDiv
         .querySelector(`#task-${key}`)
@@ -138,7 +135,8 @@ export default class UserInterface{
     .childNodes
       .forEach(list => {
         
-        if(list.hasAttribute('data-name')){
+        if(list.hasAttribute('data-name') && list.getAttribute('data-name') !==
+      'All'){
           
           if(Storage.checkForPreExistingList(list.getAttribute('data-name')))
           
@@ -246,7 +244,30 @@ export default class UserInterface{
   static buildSectionHead(listName){
     const sectionHeader = document.getElementById('main-header');
     
-          sectionHeader.textContent = listName;
+    const listMenuButtons = document.querySelector('#lists-menu-buttons')
+    
+    sectionHeader.innerHTML = `${listName}`
+    
+    const nonNormal = ['All', 'Today', 'This Week', 'Overdue']
+    
+    if(!nonNormal.includes(listName)){
+    sectionHeader.innerHTML += `<button class='edit-project'> Edit </button>`
+    
+    
+    sectionHeader
+    .querySelector('.edit-project')
+    .onclick = () => {
+      UserInterface.openEditListPopup(listName)
+      
+      sectionHeader
+      .querySelector('button')
+      .style.display = 'none'
+      
+      listMenuButtons
+      .childNodes
+      .forEach(button => button.style.display = 'none')
+    }
+    }
   }
  
   static buildTask(task){
@@ -256,16 +277,19 @@ export default class UserInterface{
           
       taskDiv.innerHTML = (
       ` <div id='task-head'>
-      <span id='complete-status'>${String.fromCodePoint(0x2713)}</span>
+      <span id='complete-status'></span>
       <span id='task-name'>${task.name}</span>
       <span id='task-duedate'>${task.getDate()}</span>
       <span id='task-expand'>+</span>
         </div>
         
         <div id='task-more-details'>
-      <span id='task-details'>${task.details}</span>
+      <p id='task-details'>${task.details}</p>
+      
+      <div>
       <span id='task-urgency'>${task.urgency}</span>
       <span id='task-list'>${task.list}</span>
+      </div>
       
           <div id='task-buttons'>
             <button id='task-delete-button'>
@@ -282,28 +306,25 @@ export default class UserInterface{
       ` )
       
     const moreDetailsSection = taskDiv.querySelector('#task-more-details')
-    
-    moreDetailsSection
-    .style = `height: 0;
-    overflow: hidden;`
       
     const expandTask = taskDiv.querySelector('#task-expand')
     
     expandTask.onclick = () => {
       
-      if(moreDetailsSection.style.height == "0px"){
-       console.log(moreDetailsSection) 
-        
-      moreDetailsSection
-      .style = `height: 100px;
-      overflow: hidden;
-      transition: height 0.5s`
-      } else {
-        moreDetailsSection
-        .style = `height: 0;
-        overflow: hidden;
-        transition: height 0.5s`
+      if(moreDetailsSection.style.display !=="flex") {
+      expandTask.innerHTML = '-'
+      moreDetailsSection.style =
+      `display: flex;`
+        return
       }
+      
+      if(moreDetailsSection.style.display !=="none") {
+        expandTask.innerHTML = '+'
+        moreDetailsSection.style = `display: none;`
+        return
+      }
+      
+
     }
       
     const changeCompleteStatus = taskDiv.querySelector('#complete-status')
@@ -340,7 +361,8 @@ export default class UserInterface{
       if(listName == 'None'){
         
         tab.innerHTML = `${String.fromCodePoint(0x2190)} Back to Mainpage`;
-        UserInterface.openListTab(tab, 'All')
+        tab.setAttribute('data-name', 'All')
+        UserInterface.openListTab(tab)
         
       } else {
         tab.innerHTML = `${listName} <span class='list-task-count'> </span> 
@@ -361,21 +383,21 @@ export default class UserInterface{
             }
         
         tab.setAttribute('data-name', listName)
-        UserInterface.openListTab(tab, listName)
+        UserInterface.openListTab(tab)
       }
     
     return tab
   }
   
   static buildTaskForm(){
-    const main = document.querySelector('main')
+    const mainDisplay = document.querySelector('#main-display')
     
     const newTaskForm = document.createElement('form')
     
           newTaskForm.setAttribute('id', 'task-form')
     
     newTaskForm.innerHTML = ( `
-    <h2 id="form-header">New Task</h2>
+    <h2 id="form-header">NEW TASK</h2>
         
     <div>
       <label>Name</label>
@@ -384,7 +406,7 @@ export default class UserInterface{
     
     <div>
       <label>Details</label>
-      <input type="text" name="task-details"/>
+      <textarea type="text" name="task-details"></textarea>
     </div>
     
     <div>
@@ -398,7 +420,7 @@ export default class UserInterface{
       <select id="urgency-selection"
       name="task-urgency">
       
-        <option value='No Urgency' disabled selected> No Urgency (Default)</option>
+        <option value='No Urgency'> No Urgency </option>
         
         <option> Low </option>
         
@@ -445,7 +467,7 @@ export default class UserInterface{
     .onclick = () => {
       UserInterface.closeCreateTaskPopup()
       
-      main
+      mainDisplay
       .querySelector('#add-task')
       .style.display = 'block'
     }
@@ -458,7 +480,7 @@ export default class UserInterface{
         UserInterface.currentList,
         UserInterface.getFormData('form'))
         
-      main
+      mainDisplay
       .querySelector('#add-task')
       .style.display = 'block'
         
@@ -541,6 +563,64 @@ export default class UserInterface{
     .getElementById('list-form-popup')
     .appendChild(newListForm)
 }
+
+  static buildEditListForm(listName){
+    
+    const listsMenu = document.getElementById('lists-menu')
+    
+    const listsButtons = document.getElementById('lists-menu-buttons')
+    
+    
+    const editListForm = document.createElement('form')
+    
+          editListForm.setAttribute('id', 'edit-list-form')
+          
+      editListForm.innerHTML = ( `
+      <h2 id='form-header'> Edit List </h2>
+      
+      <div>
+        <label>Name</label>
+        <input type="text" name="list-name" required="true"/>
+      </div>
+        
+      <button type="button" id="save-button">
+      Save Changes
+      </button>
+      
+      <button type="button" id="cancel-button">
+      Cancel
+      </button>
+      
+      `)
+      
+      editListForm
+      .querySelector('input')
+      .value = listName
+      
+      editListForm
+      .querySelector('#save-button')
+      .onclick = () => {
+        const newName = editListForm.querySelector('input').value
+        
+        
+        const normalLists = document.querySelector('#normal-section')
+        
+        UserInterface.updateList(
+          listName, newName)
+        
+    }
+    
+      editListForm
+      .querySelector('#cancel-button')
+      .onclick = () => {
+        UserInterface.closeEditListPopup()
+    
+    }
+    
+    document
+    .getElementById('list-edit-popup')
+    .appendChild(editListForm)
+}
   
   static buildEditTaskForm(taskDiv){
     
@@ -569,7 +649,7 @@ export default class UserInterface{
     
     <div>
       <label>Details</label>
-      <input type='text' class='edit-popup-details'/> 
+      <textarea type='text' class='edit-popup-details'> </textarea>
     </div>
     
     <div>
@@ -703,7 +783,7 @@ export default class UserInterface{
     normalLists
     .childNodes
     .forEach(list => {
-      if(list.hasAttribute('data-name')){
+      if(list.hasAttribute('data-name') && list.getAttribute('data-name') !== 'All'){
         
         list
         .querySelector('.delete-list')
@@ -746,6 +826,38 @@ export default class UserInterface{
       } })
   }
   
+  static updateList(oldName, newName){
+    const normalLists = document.querySelector('#normal-section');
+    
+    const listTab = normalLists.querySelector(`#list-tab[data-name="${oldName}"]`)
+    
+    if(Storage.checkForPreExistingList(newName) !== true){
+        
+        if(newName != ''){
+          
+          Storage.updateList(
+            oldName, newName);
+          
+          listTab.innerHTML = 
+          `${newName} <span class='list-task-count'>
+          ${Storage.getList(newName).getTasks().length}
+          </span> 
+          
+          <button class='delete-list' style='display:none'> Delete </button>
+        `
+        
+    listTab.setAttribute('data-name', newName)
+      
+
+          
+        UserInterface.closeEditListPopup()
+      
+        } else { alert('Try giving your list a name') }
+      
+    } else alert('I think you already have this list')
+    
+  }
+  
   static saveChanges(taskDiv, oldData){
     const data = UserInterface.getFormData('edit-form')
     
@@ -770,7 +882,7 @@ export default class UserInterface{
     normalLists
     .childNodes
     .forEach(list => {
-      if(list.hasAttribute('data-name')){
+      if(list.hasAttribute('data-name') && list.getAttribute('data-name') !== 'All'){
         
         list
         .querySelector('.list-task-count')
@@ -825,26 +937,31 @@ export default class UserInterface{
  
   //OPEN AND CLOSE
   
-  static openListTab(tab, tabName){
-    const main = document.querySelector('main')
+  static openListTab(tab){
+    
+    const mainDisplay = document.querySelector('#main-display')
       
     const timeTabs = ['Today', 'This Week', 'Overdue']
         
     tab.onclick = () => {
+    const tabName = tab.getAttribute('data-name')
       
     if(!this.getEditStatus()){
+      
       UserInterface.currentList = tabName,
       UserInterface.loadHome(UserInterface.currentList)
       
       if(timeTabs.includes(tabName)){
-        main
+        mainDisplay
           .querySelector('#add-task')
             .style.display = 'none'
       } else {
-        main
+        mainDisplay
           .querySelector('#add-task')
             .style.display = 'block'
       }
+      
+    UserInterface.changeMenuDisplay()
       
     }} 
     
@@ -857,7 +974,7 @@ export default class UserInterface{
     
     if(!listForm)
     UserInterface.buildListForm()
-    popup.style.display = 'block'
+    popup.style.display = 'flex'
     
   }
   
@@ -876,11 +993,41 @@ export default class UserInterface{
 
   }
   
+  static openEditListPopup(listName){
+    const popup = document.getElementById('list-edit-popup')
+    
+    const editListForm = document.querySelector('#edit-list-form')
+    
+    if(!editListForm)
+    UserInterface.buildEditListForm(listName)
+    popup.style.display = 'flex'
+    
+  }
+  
+  static closeEditListPopup(){
+    
+    const popup = document.querySelector('#list-edit-popup')
+    
+    const editListForm = document.querySelector('#edit-list-form')
+    
+    const sectionHeader = document.getElementById('main-header')
+    
+    if(editListForm)
+    editListForm.remove()
+    popup.style.display = 'none'
+    
+    sectionHeader
+    .querySelector('button')
+    .style.display = 'block'
+    
+    UserInterface.updateTaskCount()
+  }
+  
   static openCreateTaskPopup(){
    UserInterface.buildTaskForm()
     document
     .getElementById('task-form-popup')
-    .style.display = 'block';
+    .style.display = 'flex';
   }
   
   static closeCreateTaskPopup(){
@@ -890,13 +1037,13 @@ export default class UserInterface{
     
     if(taskForm)
     taskForm.remove()
-    taskFormPopup.style.display = ''
+    taskFormPopup.style.display = 'none'
       
     UserInterface.updateTaskCount()
   }
   
   static openEditTaskPopup(taskDiv){
-    const addTaskButton = document.querySelector('main #add-task')
+    const addTaskButton = document.querySelector('#main-display #add-task')
     
     const editTaskPopup = document.querySelector('#task-edit-popup')
     
@@ -905,12 +1052,13 @@ export default class UserInterface{
     if(!editTaskForm){
       UserInterface.buildEditTaskForm(taskDiv)
       addTaskButton.style.display = 'none'
+      taskDiv.querySelector('#task-edit-button').style.display = 'none'
+      editTaskPopup.style.display = 'flex'
     } else {
       editTaskForm.remove()
       addTaskButton.style.display = 'block'
     }
     
-    editTaskPopup.style.display = 'block'
   }
   
   static closeEditTaskPopup(taskDiv){
@@ -945,7 +1093,7 @@ export default class UserInterface{
   }
   
   static initAddTaskButton(){
-    const main = document.querySelector('main');
+    const mainDisplay = document.querySelector('#main-display');
     
     const addTaskButton = document.getElementById('add-task');
     
@@ -959,7 +1107,7 @@ export default class UserInterface{
       addTaskButton.onclick = () => {
         UserInterface.openCreateTaskPopup()
       
-        main
+        mainDisplay
         .querySelector('#add-task')
         .style.display = 'none'
       
@@ -1039,7 +1187,7 @@ export default class UserInterface{
         
         list
         .forEach(list => {
-           if(list.hasAttribute('data-name')){
+           if(list.hasAttribute('data-name') && list.getAttribute('data-name') !== 'All'){
            
            list
           .querySelector('.list-task-count')
@@ -1098,7 +1246,7 @@ export default class UserInterface{
        
        list
         .forEach(list => {
-           if(list.hasAttribute('data-name')){
+        if(list.hasAttribute('data-name') && list.getAttribute('data-name') !== 'All'){
            
            list
           .querySelector('.list-task-count')
@@ -1159,7 +1307,7 @@ export default class UserInterface{
         
         list
         .forEach(list => {
-           if(list.hasAttribute('data-name') === true){
+         if(list.hasAttribute('data-name') && list.getAttribute('data-name') !== 'All'){
            
            list
           .querySelector('.list-task-count')
