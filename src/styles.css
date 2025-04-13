@@ -29,14 +29,11 @@
 }
 
 :root {
-  --mobileviewport: calc(100dvh - calc(100dvh - 100%));
-  
   --colourOne: #CBFFDB;
   --colourTwo: #7466F8;
   --colourThree: #CBDCFF;
   --colourFour: #22211D;
-  --colourFive: #FFFABC;
-  --colourSix: #FFCBE8;
+  --colourFive: #FFCBE8;
 }
 
 *::hover {
@@ -106,7 +103,7 @@ body {
   font-family: Baloo-Regular;
   font-size: 3em;
   
-  color: var(--colourSix);
+  color: var(--colourFive);
 }
 
 #lists-menu > div {
@@ -149,7 +146,7 @@ body {
   height: 0.7cm;
   
   background-color: var(--colourTwo);
-  color: var(--colourSix);
+  color: var(--colourFive);
   
   display: flex;
   align-items: center;
@@ -223,7 +220,7 @@ body {
   justify-items: center;
   gap: 0.7rem;
   
-  background-color: var(--colourSix);
+  background-color: var(--colourFive);
   outline: 0.4dvb solid var(--colourFour); ;
   outline-offset: -1vh;
 }
@@ -314,6 +311,12 @@ textarea{
   
   background-color: #1517209e;
   color: var(--colourThree);
+}
+
+#task-form ::placeholder {
+  font-size: 75%;
+  color: #cbdcff85;
+  font-style: italic;
 }
 
 #task-form button {
@@ -641,7 +644,7 @@ textarea{
 }
 
 #main-display{
-  padding: 1rem;
+  padding: 5vw;
   
   display: flex;
   flex-direction: column;
@@ -667,7 +670,7 @@ textarea{
   font-family: Refresh-Regular;
   font-size: 20pt;
   font-weight: 900;
-  color: var(--colourSix);
+  color: var(--colourFive);
   
   border: none;
   background: inherit;
@@ -693,8 +696,6 @@ textarea{
 
 #tasks-container {
   width: 100%;
-  
-  padding: 5px;
   display: grid;
   grid-template-columns: repeat(auto-fit, 1fr);
   gap: 1rem;
@@ -708,7 +709,7 @@ textarea{
 
 }
 
- #task {
+#task {
 
   font-family: Baloo-Regular;
 
@@ -730,7 +731,7 @@ textarea{
   
   display: grid;
   grid-template-columns: 20% 60% 20%;
-  grid-template-rows: repeat(2, 1fr);
+  grid-template-rows: repeat(2, auto-fit);
   column-gap: 3px;
   
   background-color: var(--colourFour);
@@ -742,8 +743,8 @@ textarea{
   align-self: center;
   grid-row: 1/3;
   
-  width: 2dvb;
-  height: 2dvh;
+  width: 2vw;
+  height: 2vw;
   padding: 1px;
   
   color: var(--colourFour);
