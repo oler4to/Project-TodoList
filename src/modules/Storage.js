@@ -9,7 +9,6 @@ export default class Storage {
   
   static onStartup(){
     if(!localStorage.getItem('todo')) {
-      console.log('Hey')
     const todo = new TodoList()
     
     todo
