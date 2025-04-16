@@ -28,6 +28,11 @@
   src: url('./fonts/NexaRustSans-Black.otf')
 }
 
+@font-face {
+  font-family: 'CreatoDisplay-Black';
+  src: url('./fonts/CreatoDisplay-Black.otf');
+}
+
 :root {
   --colourOne: #CBFFDB;
   --colourTwo: #7466F8;
@@ -655,7 +660,7 @@ textarea{
 }
 
 #main-header {
-  font-family: 'NexaRust';
+  font-family: CreatoDisplay-Black;
   font-size: 28pt;
   color: var(--colourOne);
   
@@ -697,7 +702,7 @@ textarea{
 #tasks-container {
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fit, 1fr);
+  grid-template-columns: 1fr;
   gap: 1rem;
 }
 
@@ -815,8 +820,8 @@ textarea{
   background-color: inherit;
 }
 
-@media (min-width: 960px){
+@media only screen and (min-width: 960px){
   #tasks-container {
-    grid-template-columns: repeat(auto-fit, calc(25% - 1rem));
+    grid-template-columns: repeat(auto-fit, calc(33.9% - 1rem));
   }
 }

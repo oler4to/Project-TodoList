@@ -246,7 +246,7 @@ export default class UserInterface{
     
     const listMenuButtons = document.querySelector('#lists-menu-buttons')
     
-    sectionHeader.innerHTML = `${listName}`
+    sectionHeader.innerHTML = `${listName.toUpperCase()}`
     
     const nonNormal = ['All', 'Today', 'This Week', 'Overdue']
     
@@ -632,7 +632,6 @@ export default class UserInterface{
       list: taskDiv.querySelector('#task-list').textContent,
       
     }
-    
     
     const editTaskPopup = document.querySelector('#task-edit-popup')
     
@@ -1071,6 +1070,7 @@ export default class UserInterface{
   }
   
   static closeEditTaskPopup(taskDiv){
+    const mainDisplay = document.querySelector('#main-display')
     
     const editTaskPopup = document.querySelector('#task-edit-popup')
     
@@ -1083,6 +1083,10 @@ export default class UserInterface{
     editTaskForm.remove()
     editTaskPopup.style.display = 'none'
     editTaskButton.style.display = 'block'
+    
+    mainDisplay
+    .querySelector('#add-task')
+    .style.display = 'block'
     
     UserInterface.updateTaskCount()
     
